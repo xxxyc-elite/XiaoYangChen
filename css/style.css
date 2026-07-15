@@ -40,6 +40,7 @@ body {
   letter-spacing: -0.01em;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  overflow-x: hidden;
 }
 
 a { color: var(--primary); text-decoration: none; }
@@ -407,4 +408,47 @@ a:hover { text-decoration: underline; }
   .map-card { min-height: 400px; }
   .detail-empty { min-height: auto; padding: 48px 30px; }
   .hint { font-size: 15.5px; margin-bottom: 32px; }
+  /* 手机上旅行记录 / 鱼种卡片 / 概览 改为单列，避免内容被挤窄 */
+  .prov-items, .fish-grid { grid-template-columns: 1fr; }
+  .fish-stat { flex: 1 1 130px; }
+  .about-card, .contact-card, .journal-card { padding: 26px 22px; }
+  .detail-body { padding: 22px 20px; }
+}
+
+@media (max-width: 640px) {
+  .container { padding: 0 16px; }
+  .nav-inner { padding: 0 16px; }
+  .hero { padding: 76px 18px 80px; }
+  .hero h1 { font-size: 36px; }
+  .tagline { font-size: 17px; }
+  .hero-loc { font-size: 14px; }
+  .section { padding: 56px 0; }
+  .section-title { font-size: 27px; }
+  .hint { font-size: 14.5px; margin-bottom: 26px; }
+  .about-card, .contact-card, .journal-card { padding: 22px 18px; }
+  .about-card .markdown { font-size: 15.5px; }
+  .fish-order { padding: 20px 16px 22px; }
+  .fish-order-title { font-size: 21px; }
+  .fish-family-title { font-size: 16px; }
+  .fish-name { font-size: 19px; }
+  .journal-card h3 { font-size: 22px; }
+  #chinaMap { height: 360px; }
+  .map-card { min-height: 360px; }
+  .detail-empty { padding: 36px 18px; }
+  .prov-title { font-size: 23px; }
+  .record { padding: 14px 15px; }
+  /* 手机上直接显示内容，避免 reveal 动画在弱网 / 低性能设备上偶发卡在透明 */
+  .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+}
+
+@media (max-width: 400px) {
+  .container { padding: 0 14px; }
+  .nav-inner { padding: 0 14px; }
+  .hero { padding: 64px 14px 68px; }
+  .hero h1 { font-size: 30px; }
+  .tagline { font-size: 16px; }
+  .section-title { font-size: 24px; }
+  #chinaMap { height: 320px; }
+  .map-card { min-height: 320px; }
+  .map-controls { gap: 12px; }
 }

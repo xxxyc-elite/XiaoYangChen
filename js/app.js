@@ -164,6 +164,9 @@
     echarts.registerMap("china", window.CHINA_GEO);
     chart = echarts.init(document.getElementById("chinaMap"));
 
+    // 移动端（窄屏）关闭地图拖拽缩放，并把初始缩放调小，避免把地图平移/放大出可视区导致「显示不全」
+    function isCompact() { return window.innerWidth < 860; }
+
     // 省份名归一化：「江西省」→「江西」、「广西壮族自治区」→「广西」
     function normProv(n) {
       return (n || "")
@@ -212,8 +215,8 @@
       },
       geo: {
         map: "china",
-        roam: true,
-        zoom: 1.18,
+        roam: !isCompact(),
+        zoom: isCompact() ? 1.02 : 1.18,
         scaleLimit: { min: 1, max: 6 },
         label: { show: false },
         itemStyle: { areaColor: "#eef2f7", borderColor: "#d3dce6", borderWidth: 0.8 },
@@ -247,7 +250,12 @@
       }
     });
 
-    window.addEventListener("resize", function () { chart && chart.resize(); });
+    window.addEventListener("resize", function () {
+      if (!chart) return;
+      chart.resize();
+      // 跨断点时同步 roam / zoom，保证手机上地图始终完整可见
+      chart.setOption({ geo: { roam: !isCompact(), zoom: isCompact() ? 1.02 : 1.18 } });
+    });
   }
 
   // 点击地图标记时，联动高亮下方对应的记录卡片
