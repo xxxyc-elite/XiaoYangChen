@@ -1,0 +1,9 @@
+# WorkBuddy 项目数据（含本地记忆），不公开
+.workbuddy/
+
+# 系统 / 编辑器文件
+.DS_Store
+Thumbs.db
+*.tmp
+*.bak
+*.tsv
