@@ -303,7 +303,7 @@ window.SITE_DATA = {
       province: "安徽省",
       city: "安庆市",
       county: "桐城市",
-      img: "",
+      img: "assets/tongcheng.png",
       note: "暑假与父母同游桐城。",
     },
     {
