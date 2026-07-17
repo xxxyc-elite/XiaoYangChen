@@ -296,6 +296,17 @@ window.SITE_DATA = {
       note: "三次参加快题集训。",
     },
     {
+      name: "桐城",
+      coord: [116.94, 31.05],
+      date: "2017.07",
+      tags: ["旅行"],
+      province: "安徽省",
+      city: "安庆市",
+      county: "桐城市",
+      img: "",
+      note: "暑假与父母同游桐城。",
+    },
+    {
       name: "大觉山",
       coord: [116.98, 27.45],
       date: "2024.08",
