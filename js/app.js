@@ -154,40 +154,27 @@
     return points.filter(passFilters);
   }
 
-  /* ---------------- 初始化 ECharts 中国地图 ---------------- */
+  /* ---------------- 初始化 ECharts 世界地图（中国居中） ---------------- */
   function initMap() {
-    if (!window.echarts || !window.CHINA_GEO) {
+    if (!window.echarts || !window.WORLD_GEO) {
       document.getElementById("chinaMap").innerHTML =
-        '<p style="padding:40px;text-align:center;color:#888">地图数据加载失败，请确认 js/china-geo.js 与 js/echarts.min.js 存在。</p>';
+        '<p style="padding:40px;text-align:center;color:#cdd">地图数据加载失败，请确认 js/world-geo.js 与 js/echarts.min.js 存在。</p>';
       return;
     }
-    echarts.registerMap("china", window.CHINA_GEO);
+    echarts.registerMap("world", window.WORLD_GEO);
     chart = echarts.init(document.getElementById("chinaMap"));
 
     // 移动端（窄屏）关闭地图拖拽缩放，并把初始缩放调小，避免把地图平移/放大出可视区导致「显示不全」
     function isCompact() { return window.innerWidth < 860; }
 
-    // 省份名归一化：「江西省」→「江西」、「广西壮族自治区」→「广西」
-    function normProv(n) {
-      return (n || "")
-        .replace(/省|市|特别行政区/g, "")
-        .replace(/(壮族|回族|维吾尔|藏族)?自治区/, "")
-        .trim();
-    }
-    var visitedNorm = new Set(
-      travelPts.map(function (p) { return normProv(p.province); }).filter(Boolean)
-    );
-    // 去过的省份上深蓝色，其余保持浅灰
-    var visitedRegions = (window.CHINA_GEO.features || [])
-      .map(function (f) { return (f.properties && f.properties.name) || ""; })
-      .filter(function (nm) { return visitedNorm.has(normProv(nm)); })
-      .map(function (nm) {
-        return {
-          name: nm,
-          itemStyle: { areaColor: "#1f7ae0", borderColor: "#ffffff", borderWidth: 0.9, opacity: 0.92 },
-          emphasis: { itemStyle: { areaColor: "#0f63c9" } },
-        };
-      });
+    // 世界地图：把「去过」的国家加深。当前所有旅行点都在中国，所以中国整国加深。
+    var visitedRegions = [
+      {
+        name: "China",
+        itemStyle: { areaColor: "#1f7ae0", borderColor: "#ffffff", borderWidth: 0.9, opacity: 0.92 },
+        emphasis: { itemStyle: { areaColor: "#0f63c9" } },
+      },
+    ];
 
     function tooltipFmt(params) {
       if (params.data && params.data.value) {
@@ -198,14 +185,12 @@
         return s;
       }
       var nm = params.name || "";
-      if (visitedNorm.has(normProv(nm))) {
-        var cnt = travelPts.filter(function (p) { return normProv(p.province) === normProv(nm); }).length;
-        return "<b>" + esc(nm) + "</b><br/>✅ 去过 · " + cnt + " 个地点";
-      }
-      return "<b>" + esc(nm) + "</b><br/><span style='color:#999'>未去过</span>";
+      if (nm === "China") return "<b>中国</b><br/>✅ 去过";
+      return "<b>" + esc(nm) + "</b>";
     }
 
     var opt = {
+      backgroundColor: "transparent",
       tooltip: {
         trigger: "item",
         formatter: tooltipFmt,
@@ -214,13 +199,14 @@
         textStyle: { color: "#1f2933" },
       },
       geo: {
-        map: "china",
+        map: "world",
         roam: !isCompact(),
-        zoom: isCompact() ? 1.02 : 1.18,
-        scaleLimit: { min: 1, max: 6 },
+        center: [100, 35],
+        zoom: isCompact() ? 1.0 : 1.12,
+        scaleLimit: { min: 1, max: 8 },
         label: { show: false },
-        itemStyle: { areaColor: "#eef2f7", borderColor: "#d3dce6", borderWidth: 0.8 },
-        emphasis: { itemStyle: { areaColor: "#dbe7f5" }, label: { show: false } },
+        itemStyle: { areaColor: "#e3e9f0", borderColor: "#c2cdd9", borderWidth: 0.6 },
+        emphasis: { itemStyle: { areaColor: "#d3e0f0" }, label: { show: false } },
         regions: visitedRegions,
       },
       series: [
@@ -254,7 +240,7 @@
       if (!chart) return;
       chart.resize();
       // 跨断点时同步 roam / zoom，保证手机上地图始终完整可见
-      chart.setOption({ geo: { roam: !isCompact(), zoom: isCompact() ? 1.02 : 1.18 } });
+      chart.setOption({ geo: { roam: !isCompact(), zoom: isCompact() ? 1.0 : 1.12 } });
     });
   }
 
