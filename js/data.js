@@ -413,7 +413,7 @@ window.SITE_DATA = {
       province: "河南省",
       city: "洛阳市",
       county: "",
-      img: "",
+      img: "assets/luoyang.png",
       note: "与考研快题的同学们同游。",
     },
     {
@@ -424,7 +424,7 @@ window.SITE_DATA = {
       province: "河南省",
       city: "开封市",
       county: "",
-      img: "",
+      img: "assets/kaifeng.png",
       note: "与考研快题的同学们同游。",
     },
   ],
