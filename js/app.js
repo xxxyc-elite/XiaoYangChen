@@ -1,6 +1,6 @@
 /* =====================================================================
    肖阳晨的个人网站 — 交互逻辑
-   依赖：china-geo.js / echarts.min.js / marked.min.js / data.js
+   依赖：leaflet.js / china-prov-geo.js / china-city-geo.js / marked.min.js / data.js
    ===================================================================== */
 (function () {
   "use strict";
@@ -20,7 +20,9 @@
   var TRAVEL_COLOR = "#3b82f6";
   var activeTags = new Set();          // 当前选中的标签
   var activeProvince = null;           // 当前选中的省级行政区（null = 全部）
-  var chart = null;
+  var map = null;
+  var markerLayer, provLayer, cityLayer;
+  var markerByName = {};
 
   /* ---------------- 顶部 / Hero ---------------- */
   var p = D.profile || {};
@@ -154,93 +156,105 @@
     return points.filter(passFilters);
   }
 
-  /* ---------------- 初始化 ECharts 世界地图（中国居中） ---------------- */
+  /* ---------------- 初始化 Leaflet 中国地形图（省界 + 地级市界 + 地形瓦片） ---------------- */
+  // 省份名归一化：「江西省」→「江西」、「广西壮族自治区」→「广西」、「北京市」→「北京」
+  function normProv(n) {
+    return (n || "")
+      .replace(/(省|市|特别行政区|自治区)$/, "")
+      .replace(/(壮族|回族|维吾尔|藏族)/, "")
+      .trim();
+  }
+  var visitedProvSet = new Set(
+    travelPts.map(function (p) { return normProv(p.province); }).filter(Boolean)
+  );
+
+  function makeTip(d) {
+    var s = "<b>" + esc(d.name || "") + "</b><br/>";
+    s += "📍 旅行足迹<br/>日期：" + esc(d.date || "-");
+    if (d.note) s += "<br/><span style='color:#666'>" + esc(d.note) + "</span>";
+    return s;
+  }
+
   function initMap() {
-    if (!window.echarts || !window.WORLD_GEO) {
-      document.getElementById("chinaMap").innerHTML =
-        '<p style="padding:40px;text-align:center;color:#cdd">地图数据加载失败，请确认 js/world-geo.js 与 js/echarts.min.js 存在。</p>';
+    var container = document.getElementById("chinaMap");
+    if (!window.L || !window.CHINA_PROV_GEO || !window.CHINA_CITY_GEO) {
+      container.innerHTML =
+        '<p style="padding:40px;text-align:center;color:#cdd">地图加载失败，请确认 js/leaflet.js 与边界数据文件存在。</p>';
       return;
     }
-    echarts.registerMap("world", window.WORLD_GEO);
-    chart = echarts.init(document.getElementById("chinaMap"));
-
-    // 移动端（窄屏）关闭地图拖拽缩放，并把初始缩放调小，避免把地图平移/放大出可视区导致「显示不全」
-    function isCompact() { return window.innerWidth < 860; }
-
-    // 世界地图：把「去过」的国家加深。当前所有旅行点都在中国，所以中国整国加深。
-    var visitedRegions = [
-      {
-        name: "China",
-        itemStyle: { areaColor: "#1f7ae0", borderColor: "#ffffff", borderWidth: 0.9, opacity: 0.92 },
-        emphasis: { itemStyle: { areaColor: "#0f63c9" } },
-      },
-    ];
-
-    function tooltipFmt(params) {
-      if (params.data && params.data.value) {
-        var d = params.data;
-        var s = "<b>" + esc(d.name || "") + "</b><br/>";
-        s += "📍 旅行足迹<br/>日期：" + esc(d.date || "-");
-        if (d.note) s += "<br/><span style='color:#666'>" + esc(d.note) + "</span>";
-        return s;
-      }
-      var nm = params.name || "";
-      if (nm === "China") return "<b>中国</b><br/>✅ 去过";
-      return "<b>" + esc(nm) + "</b>";
-    }
-
-    var opt = {
-      backgroundColor: "transparent",
-      tooltip: {
-        trigger: "item",
-        formatter: tooltipFmt,
-        backgroundColor: "rgba(255,255,255,.96)",
-        borderColor: "#dbe4ee",
-        textStyle: { color: "#1f2933" },
-      },
-      geo: {
-        map: "world",
-        roam: !isCompact(),
-        center: [100, 35],
-        zoom: isCompact() ? 1.0 : 1.12,
-        scaleLimit: { min: 1, max: 8 },
-        label: { show: false },
-        itemStyle: { areaColor: "#e3e9f0", borderColor: "#c2cdd9", borderWidth: 0.6 },
-        emphasis: { itemStyle: { areaColor: "#d3e0f0" }, label: { show: false } },
-        regions: visitedRegions,
-      },
-      series: [
-        {
-          name: "旅行",
-          type: "effectScatter",
-          coordinateSystem: "geo",
-          data: filtered(travelPts),
-          symbol: "circle",
-          symbolSize: 14,
-          rippleEffect: { scale: 3, brushType: "stroke" },
-          itemStyle: {
-            color: TRAVEL_COLOR, shadowBlur: 10, shadowColor: "rgba(0,113,227,.55)",
-            borderColor: "#fff", borderWidth: 1.5,
-          },
-          emphasis: { scale: 1.6 },
-          z: 5,
-        },
-      ],
-    };
-    chart.setOption(opt);
-
-    chart.on("click", function (params) {
-      if (params.data && params.data.value) {
-        showDetail(params.data);
-        highlightRecord(params.data.name);
-      }
+    map = L.map(container, {
+      center: [35.5, 104], zoom: 4, minZoom: 3, maxZoom: 12,
+      zoomControl: true, attributionControl: true, worldCopyJump: false,
     });
 
-    window.addEventListener("resize", function () {
-      if (!chart) return;
-      chart.resize();
-      // 跨断点时同步 roam / zoom，保证手机上地图始终完整可见
-      chart.setOption({ geo: { roam: !isCompact(), zoom: isCompact() ? 1.0 : 1.12 } });
+    // 地形底图（Esri）：两种可切换
+    var relief = L.tileLayer(
+      "https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}",
+      { maxZoom: 13, attribution: "地形 © Esri" }
+    ).addTo(map);
+    var physical = L.tileLayer(
+      "https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}",
+      { maxZoom: 13, attribution: "自然地理 © Esri" }
+    );
+    L.control.layers(
+      { "地形晕渲": relief, "自然地理": physical },
+      null,
+      { position: "topright" }
+    ).addTo(map);
+
+    // 地级市界（细线，浅色）
+    cityLayer = L.geoJSON(window.CHINA_CITY_GEO, {
+      style: { color: "rgba(60,90,120,0.45)", weight: 0.7, fill: false },
+      interactive: false,
+    }).addTo(map);
+
+    // 省界（加粗；去过的省份高亮蓝，未去过的灰蓝）
+    provLayer = L.geoJSON(window.CHINA_PROV_GEO, {
+      style: function (f) {
+        var visited = visitedProvSet.has(normProv(f.properties.name));
+        return {
+          color: visited ? "#1f7ae0" : "rgba(70,90,110,0.8)",
+          weight: visited ? 2 : 1.2,
+          fill: false,
+        };
+      },
+      interactive: false,
+    }).addTo(map);
+
+    // 旅行发光点
+    markerLayer = L.layerGroup().addTo(map);
+    drawMarkers(filtered(travelPts));
+
+    window.addEventListener("resize", function () { if (map) map.invalidateSize(); });
+    window.addEventListener("load", function () { if (map) map.invalidateSize(); });
+    // reveal 动画后容器尺寸才稳定，多次 invalidate
+    [300, 800, 1500].forEach(function (t) { setTimeout(function () { if (map) map.invalidateSize(); }, t); });
+  }
+
+  // 绘制 / 重绘旅行点（受标签 + 省份筛选影响）
+  function drawMarkers(pts) {
+    if (!markerLayer) return;
+    markerLayer.clearLayers();
+    markerByName = {};
+    pts.forEach(function (pt) {
+      if (!pt.value || pt.value.length !== 2) return;
+      var m = L.marker([pt.value[1], pt.value[0]], {
+        icon: L.divIcon({
+          className: "travel-dot",
+          html: '<span class="dot-core"></span>',
+          iconSize: [18, 18], iconAnchor: [9, 9],
+        }),
+        title: pt.name,
+        riseOnHover: true,
+      });
+      m.bindTooltip(makeTip(pt), { className: "travel-tip", direction: "top", offset: [0, -8] });
+      m.on("click", function () {
+        showDetail(pt);
+        highlightRecord(pt.name);
+        map.panTo([pt.value[1], pt.value[0]]);
+      });
+      m.addTo(markerLayer);
+      markerByName[pt.name] = m;
     });
   }
 
@@ -255,9 +269,9 @@
   }
 
   function renderMapData() {
-    if (!chart) return;
+    if (!map) return;
     var tData = filtered(travelPts);
-    chart.setOption({ series: [{ name: "旅行", data: tData }] });
+    drawMarkers(tData);
     updateMapStat(tData.length);
   }
 
@@ -340,8 +354,10 @@
         if (pt) {
           showDetail(pt);
           document.getElementById("detailCard").scrollIntoView({ behavior: "smooth", block: "center" });
-          if (chart) {
-            chart.dispatchAction({ type: "showTip", seriesIndex: 0, dataIndex: travelPts.indexOf(pt) });
+          if (map && markerByName[pt.name]) {
+            var mk = markerByName[pt.name];
+            map.panTo(mk.getLatLng());
+            mk.openTooltip();
           }
         }
       });
@@ -521,7 +537,7 @@
   /* ---------------- 启动 ---------------- */
   initMap();
   buildProvFilter();
-  if (chart) updateMapStat(travelPts.length);
+  if (map) updateMapStat(travelPts.length);
   buildRecords();
 
   /* ---------------- 滚动渐显（Apple 风 reveal） ---------------- */

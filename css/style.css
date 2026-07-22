@@ -244,7 +244,8 @@ a:hover { text-decoration: underline; }
 
 .map-layout { display: grid; grid-template-columns: 1.7fr 1fr; gap: 22px; align-items: stretch; }
 .map-card { padding: 14px; min-height: 540px; }
-#chinaMap { width: 100%; height: 560px; background: radial-gradient(120% 120% at 50% 42%, #1a4d75 0%, #123a5e 48%, #0c2742 100%); border-radius: 16px; }
+#chinaMap { width: 100%; height: 560px; background: #dfe9f2; border-radius: 16px; overflow: hidden; }
+.leaflet-container { border-radius: 16px; font-family: inherit; background: #dfe9f2; }
 
 .detail-card { padding: 0; overflow: hidden; }
 .detail-empty { height: 100%; min-height: 540px; display: grid; place-items: center; text-align: center; color: var(--muted); padding: 30px; }
@@ -266,6 +267,33 @@ a:hover { text-decoration: underline; }
 /* 关键修复：让 hidden 属性真正隐藏（否则作者样式的 display 会覆盖它，
    导致点击地图后「点击查看记录」提示一直停留在面板上，看起来像没反应） */
 .detail-empty[hidden], .detail-body[hidden] { display: none !important; }
+
+/* 中国地形图：旅行发光点（替代 echarts effectScatter 波纹） */
+.travel-dot { background: transparent; border: 0; }
+.travel-dot .dot-core {
+  display: block; width: 14px; height: 14px; border-radius: 50%;
+  background: #3b82f6; border: 2px solid #fff;
+  box-shadow: 0 0 0 4px rgba(59,130,246,.35), 0 0 12px 4px rgba(59,130,246,.7);
+  animation: dotPulse 1.8s ease-out infinite;
+}
+@keyframes dotPulse {
+  0%   { box-shadow: 0 0 0 2px rgba(59,130,246,.45), 0 0 8px 3px rgba(59,130,246,.6); }
+  70%  { box-shadow: 0 0 0 12px rgba(59,130,246,0), 0 0 8px 3px rgba(59,130,246,.6); }
+  100% { box-shadow: 0 0 0 2px rgba(59,130,246,0), 0 0 8px 3px rgba(59,130,246,.6); }
+}
+.leaflet-tooltip.travel-tip {
+  background: rgba(255,255,255,.96); border: 1px solid #dbe4ee; color: #1f2933;
+  border-radius: 10px; box-shadow: 0 6px 20px rgba(20,40,70,.14); font-size: 13px;
+}
+.leaflet-tooltip.travel-tip::before { display: none; }
+.leaflet-control-layers { border-radius: 12px; box-shadow: 0 6px 20px rgba(20,40,70,.16); }
+.leaflet-control-layers-expanded { padding: 8px 10px; font-size: 13px; }
+.leaflet-bar a { border-radius: 0; }
+
+@media (max-width: 640px) {
+  #chinaMap { height: 440px; }
+  .map-layout { grid-template-columns: 1fr; }
+}
 
 /* 点击地图标记时，联动高亮下方对应的记录卡片 */
 .record.flash { box-shadow: 0 0 0 3px var(--primary); border-color: var(--primary); }
