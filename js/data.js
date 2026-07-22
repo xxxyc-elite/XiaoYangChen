@@ -14,7 +14,7 @@ window.SITE_DATA = {
     name: "肖阳晨",
     englishName: "阳晨·肖",
     tagline: "努力挣扎的规划研究生", // 原稿“龟话”按同音更正为“规划”，如需改回请告知
-    avatar: "assets/avatar.webp",
+    avatar: "assets/avatar.png",
     location: "中国 · 江西 · 南昌",
     // 个人简介：支持 Markdown 语法（**加粗**、*斜体*、- 列表、`代码`、> 引用 等）
     bio: [

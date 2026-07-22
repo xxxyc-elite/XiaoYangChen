@@ -17,7 +17,7 @@
     return window.marked ? marked.parse(String(text)) : String(text);
   }
 
-  var TRAVEL_COLOR = "#3b82f6";
+  var TRAVEL_COLOR = "#f59e0b";
   var activeTags = new Set();          // 当前选中的标签
   var activeProvince = null;           // 当前选中的省级行政区（null = 全部）
   var map = null;
