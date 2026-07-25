@@ -21,6 +21,7 @@
   var activeTags = new Set();          // 当前选中的标签
   var activeProvince = null;           // 当前选中的省级行政区（null = 全部）
   var map = null;
+  var mapReady = false;             // 地图懒加载标记（切到足迹版块才初始化）
   var markerLayer, provLayer, cityLayer;
   var markerByName = {};
 
@@ -524,25 +525,73 @@
 
   /* ---------------- 开关（原 旅行/垂钓，已移除垂钓） ---------------- */
 
-  /* ---------------- 移动端菜单 ---------------- */
-  var navToggle = document.getElementById("navToggle");
-  var navLinks = document.getElementById("navLinks");
-  if (navToggle && navLinks) {
-    navToggle.addEventListener("click", function () { navLinks.classList.toggle("open"); });
-    navLinks.querySelectorAll("a").forEach(function (a) {
-      a.addEventListener("click", function () { navLinks.classList.remove("open"); });
-    });
+  /* ---------------- 左侧目录 + 单版块切换 ---------------- */
+  var sidebar = document.getElementById("sidebar");
+  var menuBtn = document.getElementById("menuBtn");
+  var backdrop = document.getElementById("backdrop");
+  var sideLinks = document.querySelectorAll(".side-link");
+
+  function openDrawer() {
+    if (sidebar) sidebar.classList.add("open");
+    if (backdrop) backdrop.classList.add("show");
+  }
+  function closeDrawer() {
+    if (sidebar) sidebar.classList.remove("open");
+    if (backdrop) backdrop.classList.remove("show");
+  }
+  if (menuBtn) menuBtn.addEventListener("click", openDrawer);
+  if (backdrop) backdrop.addEventListener("click", closeDrawer);
+
+  function revealPanel(panel) {
+    if (!panel) return;
+    panel.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("in"); });
   }
 
-  /* ---------------- 启动 ---------------- */
-  initMap();
-  buildProvFilter();
-  if (map) updateMapStat(travelPts.length);
-  buildRecords();
+  // 只显示目标版块，其余隐藏
+  function showPanel(target) {
+    var panel = document.getElementById("panel-" + target);
+    if (!panel) return;
+    document.querySelectorAll(".panel").forEach(function (p) { p.classList.remove("active"); });
+    panel.classList.add("active");
+    sideLinks.forEach(function (l) {
+      l.classList.toggle("active", l.getAttribute("data-target") === target);
+    });
+    closeDrawer();
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    // 地图：切到足迹版块时再初始化并修正尺寸
+    if (target === "map") {
+      if (!mapReady) { initMap(); mapReady = true; }
+      setTimeout(function () { if (map) map.invalidateSize(); }, 80);
+      updateMapStat(filtered(travelPts).length);
+    }
+    revealPanel(panel);
+  }
 
-  /* ---------------- 滚动渐显（Apple 风 reveal） ---------------- */
+  sideLinks.forEach(function (l) {
+    l.addEventListener("click", function () { showPanel(l.getAttribute("data-target")); });
+  });
+
+  // 拦截 #锚点（封面 / 各版块按钮）→ 切换到对应版块
+  document.addEventListener("click", function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('a[href^="#"]') : null;
+    if (!a) return;
+    var href = a.getAttribute("href");
+    var t = href === "#top" ? "hero" : href.slice(1);
+    if (document.getElementById("panel-" + t)) {
+      e.preventDefault();
+      showPanel(t);
+      history.replaceState(null, "", href === "#top" ? "#hero" : href);
+    }
+  });
+
+  /* ---------------- 启动 ---------------- */
+  buildProvFilter();
+  buildRecords();
+  updateMapStat(travelPts.length);
+
+  /* ---------------- 滚动渐显（按版块激活时触发 reveal） ---------------- */
   (function () {
-    var sels = [".hero-inner", ".section-title", ".hint", ".about-card", ".contact-card",
+    var sels = [".section-title", ".hint", ".about-card", ".contact-card",
       ".hobby", ".tag", ".map-layout", ".prov-filter", ".record-list",
       ".prov-group", ".record", ".fish-order", ".journal-card"];
     var els = [];
@@ -550,23 +599,11 @@
       document.querySelectorAll(s).forEach(function (e) { els.push(e); });
     });
     els.forEach(function (el) { el.classList.add("reveal"); });
-    if (!("IntersectionObserver" in window)) {
-      els.forEach(function (el) { el.classList.add("in"); });
-      return;
-    }
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
-      });
-    }, { threshold: 0.1, rootMargin: "0px 0px -6% 0px" });
-    els.forEach(function (el) { io.observe(el); });
+    // 初始面板（支持 #hash 直达）：封面 / 对应版块
+    var initial = (location.hash && location.hash !== "#top") ? location.hash.slice(1) : "hero";
+    if (!document.getElementById("panel-" + initial)) initial = "hero";
+    showPanel(initial);
   })();
-
-  /* ---------------- 导航滚动阴影 ---------------- */
-  window.addEventListener("scroll", function () {
-    var n = document.getElementById("nav");
-    if (n) n.classList.toggle("scrolled", window.scrollY > 8);
-  }, { passive: true });
 
   /* ---------------- 工具 ---------------- */
   function setText(id, txt) { var el = document.getElementById(id); if (el && txt != null) el.textContent = txt; }

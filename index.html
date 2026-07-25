@@ -9,134 +9,159 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <!-- 顶部导航 -->
-  <header class="nav" id="nav">
-    <div class="nav-inner">
-      <a class="brand" href="#top" id="brandName">肖阳晨</a>
-      <nav class="nav-links" id="navLinks">
-        <a href="#about">简介</a>
-        <a href="#hobbies">兴趣</a>
-        <a href="#tags">标签</a>
-        <a href="#map">足迹</a>
-        <a href="#fish">鱼种</a>
-        <a href="#journal">随笔</a>
+  <div class="layout">
+    <!-- 左侧常驻「图签式」目录 -->
+    <aside class="sidebar" id="sidebar">
+      <div class="side-brand">
+        <a class="brand" href="#top" data-target="hero">肖阳晨</a>
+        <p class="side-sub">城市规划 · 工程制图</p>
+      </div>
+      <nav class="side-nav" id="sideNav">
+        <a class="side-link" data-target="hero"><span class="sx">00</span><span class="st">封面</span></a>
+        <a class="side-link" data-target="about"><span class="sx">01</span><span class="st">个人简介</span></a>
+        <a class="side-link" data-target="hobbies"><span class="sx">02</span><span class="st">兴趣爱好</span></a>
+        <a class="side-link" data-target="tags"><span class="sx">03</span><span class="st">标签分类</span></a>
+        <a class="side-link" data-target="map"><span class="sx">04</span><span class="st">旅行足迹</span></a>
+        <a class="side-link" data-target="fish"><span class="sx">05</span><span class="st">钓鱼图鉴</span></a>
+        <a class="side-link" data-target="journal"><span class="sx">06</span><span class="st">随笔</span></a>
       </nav>
-      <button class="nav-toggle" id="navToggle" aria-label="菜单">☰</button>
-    </div>
-  </header>
-
-  <main id="top">
-    <!-- Hero -->
-    <section class="hero" id="hero">
-      <div class="hero-bg"></div>
-      <div class="hero-inner">
-        <div class="avatar" id="avatar">肖</div>
-        <p class="hero-kicker">规划 · 垂钓 · 旅行</p>
-        <h1 id="heroName">肖阳晨</h1>
-        <p class="tagline" id="heroTagline">在路上的人，也在水边的人</p>
-        <p class="hero-loc" id="heroLoc">📍 中国 · 浙江</p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="#map">查看足迹地图</a>
-          <a class="btn btn-ghost" href="#about">关于我</a>
-        </div>
+      <div class="side-foot">
+        <span class="sf-line"></span>
+        <span>© 肖阳晨 · 2026</span>
       </div>
-    </section>
+    </aside>
 
-    <!-- 个人简介 -->
-    <section class="section" id="about">
-      <div class="container">
-        <p class="kicker">01 / 个人简介</p>
-        <h2 class="section-title"><span class="dot"></span>个人简介</h2>
-        <div class="about-grid">
-          <div class="card about-card">
-            <div class="markdown" id="bio"></div>
-          </div>
-          <aside class="card contact-card">
-            <h3>联系方式</h3>
-            <ul class="contacts" id="contacts"></ul>
-          </aside>
-        </div>
-      </div>
-    </section>
+    <!-- 移动端：顶栏按钮 + 遮罩 -->
+    <button class="menu-btn" id="menuBtn" aria-label="菜单">☰</button>
+    <div class="backdrop" id="backdrop"></div>
 
-    <!-- 兴趣爱好 -->
-    <section class="section section-alt" id="hobbies">
-      <div class="container">
-        <p class="kicker">02 / 兴趣爱好</p>
-        <h2 class="section-title"><span class="dot"></span>兴趣爱好</h2>
-        <div class="hobby-grid" id="hobbyGrid"></div>
-      </div>
-    </section>
-
-    <!-- 标签分类 -->
-    <section class="section" id="tags">
-      <div class="container">
-        <p class="kicker">03 / 标签分类</p>
-        <h2 class="section-title"><span class="dot"></span>标签分类</h2>
-        <p class="hint">这些标签是全站的<b>交叉筛选器</b>：点一个，下方 <b>兴趣爱好 · 钓鱼种类 · 旅行足迹</b> 里带该标签的内容会保留、其余变灰；可多选，再次点击或点 ✕ 取消。</p>
-        <div class="tag-cloud" id="tagCloud"></div>
-        <div class="tag-filter-bar" id="tagFilterBar" hidden></div>
-      </div>
-    </section>
-
-    <!-- 旅行 & 垂钓 地图 -->
-    <section class="section section-alt" id="map">
-      <div class="container">
-        <p class="kicker">04 / 旅行足迹</p>
-        <h2 class="section-title"><span class="dot"></span>旅行足迹</h2>
-        <p class="hint">下图为<b>中国地形图</b>（Esri 地形瓦片），叠加了<b>省界</b>（加粗，去过的省份高亮蓝）与<b>地级市界</b>（细线）。<b class="c-travel">琥珀色测绘标记</b> 为到过的地点，点击标记即可在右侧查看旅行记录（并联动下方列表），或用下方标签 / 省级行政区筛选。右上角可切换「地形晕渲 / 自然地理」两种地形底图。</p>
-
-        <div class="map-controls">
-          <span class="map-stat" id="mapStat"></span>
-        </div>
-        <div class="prov-filter" id="provFilter"></div>
-
-        <div class="map-layout">
-          <div class="card map-card">
-            <div id="chinaMap"></div>
-          </div>
-          <aside class="card detail-card" id="detailCard">
-            <div class="detail-empty" id="detailEmpty">
-              <div class="detail-empty-icon">🗺️</div>
-              <p>点击地图上的点，<br />查看旅行记录。</p>
+    <main class="content" id="content">
+      <!-- 00 封面 -->
+      <section class="panel" id="panel-hero">
+        <section class="hero" id="hero">
+          <div class="hero-bg"></div>
+          <div class="hero-inner">
+            <div class="avatar" id="avatar">肖</div>
+            <p class="hero-kicker">规划 · 垂钓 · 旅行</p>
+            <h1 id="heroName">肖阳晨</h1>
+            <p class="tagline" id="heroTagline">在路上的人，也在水边的人</p>
+            <p class="hero-loc" id="heroLoc">📍 中国 · 浙江</p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="#map">查看足迹地图</a>
+              <a class="btn btn-ghost" href="#about">关于我</a>
             </div>
-            <div class="detail-body" id="detailBody" hidden></div>
-          </aside>
+          </div>
+        </section>
+      </section>
+
+      <!-- 01 个人简介 -->
+      <section class="panel" id="panel-about">
+        <section class="section" id="about">
+          <div class="container">
+            <p class="kicker">01 / 个人简介</p>
+            <h2 class="section-title"><span class="dot"></span>个人简介</h2>
+            <div class="about-grid">
+              <div class="card about-card">
+                <div class="markdown" id="bio"></div>
+              </div>
+              <aside class="card contact-card">
+                <h3>联系方式</h3>
+                <ul class="contacts" id="contacts"></ul>
+              </aside>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- 02 兴趣爱好 -->
+      <section class="panel" id="panel-hobbies">
+        <section class="section section-alt" id="hobbies">
+          <div class="container">
+            <p class="kicker">02 / 兴趣爱好</p>
+            <h2 class="section-title"><span class="dot"></span>兴趣爱好</h2>
+            <div class="hobby-grid" id="hobbyGrid"></div>
+          </div>
+        </section>
+      </section>
+
+      <!-- 03 标签分类 -->
+      <section class="panel" id="panel-tags">
+        <section class="section" id="tags">
+          <div class="container">
+            <p class="kicker">03 / 标签分类</p>
+            <h2 class="section-title"><span class="dot"></span>标签分类</h2>
+            <p class="hint">这些标签是全站的<b>交叉筛选器</b>：点一个，下方 <b>兴趣爱好 · 钓鱼种类 · 旅行足迹</b> 里带该标签的内容会保留、其余变灰；可多选，再次点击或点 ✕ 取消。</p>
+            <div class="tag-cloud" id="tagCloud"></div>
+            <div class="tag-filter-bar" id="tagFilterBar" hidden></div>
+          </div>
+        </section>
+      </section>
+
+      <!-- 04 旅行 & 垂钓 地图 -->
+      <section class="panel" id="panel-map">
+        <section class="section section-alt" id="map">
+          <div class="container">
+            <p class="kicker">04 / 旅行足迹</p>
+            <h2 class="section-title"><span class="dot"></span>旅行足迹</h2>
+            <p class="hint">下图为<b>中国地形图</b>（Esri 地形瓦片），叠加了<b>省界</b>（加粗，去过的省份高亮蓝）与<b>地级市界</b>（细线）。<b class="c-travel">琥珀色测绘标记</b> 为到过的地点，点击标记即可在右侧查看旅行记录（并联动下方列表），或用下方标签 / 省级行政区筛选。右上角可切换「地形晕渲 / 自然地理」两种地形底图。</p>
+
+            <div class="map-controls">
+              <span class="map-stat" id="mapStat"></span>
+            </div>
+            <div class="prov-filter" id="provFilter"></div>
+
+            <div class="map-layout">
+              <div class="card map-card">
+                <div id="chinaMap"></div>
+              </div>
+              <aside class="card detail-card" id="detailCard">
+                <div class="detail-empty" id="detailEmpty">
+                  <div class="detail-empty-icon">🗺️</div>
+                  <p>点击地图上的点，<br />查看旅行记录。</p>
+                </div>
+                <div class="detail-body" id="detailBody" hidden></div>
+              </aside>
+            </div>
+
+            <!-- 去过的地方 列表 -->
+            <div class="record-list" id="recordList"></div>
+          </div>
+        </section>
+      </section>
+
+      <!-- 05 钓鱼种类记录 -->
+      <section class="panel" id="panel-fish">
+        <section class="section" id="fish">
+          <div class="container">
+            <p class="kicker">05 / 钓鱼图鉴</p>
+            <h2 class="section-title"><span class="dot"></span>钓鱼种类记录</h2>
+            <p class="hint">钓到过的鱼种图鉴。点击顶部标签（如「垂钓」）可联动筛选相关卡片。鱼种、描述都能在 <code>js/data.js</code> 的 <code>fishSpecies</code> 里增删。</p>
+            <div class="fish-overview" id="fishOverview"></div>
+            <div class="fish-orders" id="fishGrid"></div>
+          </div>
+        </section>
+      </section>
+
+      <!-- 06 随笔 / Markdown -->
+      <section class="panel" id="panel-journal">
+        <section class="section" id="journal">
+          <div class="container">
+            <p class="kicker">06 / 随笔</p>
+            <h2 class="section-title"><span class="dot"></span>随笔 · Markdown</h2>
+            <p class="hint">本区块内容由 Markdown 渲染，可在 <code>js/data.js</code> 的 <code>journal</code> 中自由增删。</p>
+            <div id="journalList"></div>
+          </div>
+        </section>
+      </section>
+
+      <footer class="footer">
+        <div class="container">
+          <p id="footerName">© 肖阳晨</p>
+          <p class="footer-sub">用 Leaflet 与 Markdown 搭建 · 城市规划 · 工程制图风格 · 静态站点，数据皆在 <code>js/data.js</code></p>
         </div>
-
-        <!-- 去过的地方 列表 -->
-        <div class="record-list" id="recordList"></div>
-      </div>
-    </section>
-
-    <!-- 钓鱼种类记录 -->
-    <section class="section" id="fish">
-      <div class="container">
-        <p class="kicker">05 / 钓鱼图鉴</p>
-        <h2 class="section-title"><span class="dot"></span>钓鱼种类记录</h2>
-        <p class="hint">钓到过的鱼种图鉴。点击顶部标签（如「垂钓」）可联动筛选相关卡片。鱼种、描述都能在 <code>js/data.js</code> 的 <code>fishSpecies</code> 里增删。</p>
-        <div class="fish-overview" id="fishOverview"></div>
-        <div class="fish-orders" id="fishGrid"></div>
-      </div>
-    </section>
-
-    <!-- 随笔 / Markdown -->
-    <section class="section" id="journal">
-      <div class="container">
-        <p class="kicker">06 / 随笔</p>
-        <h2 class="section-title"><span class="dot"></span>随笔 · Markdown</h2>
-        <p class="hint">本区块内容由 Markdown 渲染，可在 <code>js/data.js</code> 的 <code>journal</code> 中自由增删。</p>
-        <div id="journalList"></div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <div class="container">
-      <p id="footerName">© 肖阳晨</p>
-      <p class="footer-sub">用 Leaflet 与 Markdown 搭建 · 城市规划 · 工程制图风格 · 静态站点，数据皆在 <code>js/data.js</code></p>
-    </div>
-  </footer>
+      </footer>
+    </main>
+  </div>
 
   <!-- 依赖（Leaflet 本地化；边界数据本地；地形瓦片需联网） -->
   <script src="js/china-prov-geo.js"></script>
