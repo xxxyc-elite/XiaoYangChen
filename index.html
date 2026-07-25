@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>肖阳晨的个人网站</title>
-  <meta name="description" content="肖阳晨的个人网站 — 个人简介、兴趣爱好、标签分类，可交互中国旅行足迹地图，以及钓鱼种类记录图鉴。" />
+  <meta name="description" content="肖阳晨的个人网站 — 个人简介、兴趣爱好，可交互中国旅行足迹地图，以及钓鱼种类记录图鉴。" />
   <link rel="stylesheet" href="css/leaflet.css" />
   <link rel="stylesheet" href="css/style.css" />
 </head>
@@ -20,10 +20,9 @@
         <a class="side-link" data-target="hero"><span class="sx">00</span><span class="st">封面</span></a>
         <a class="side-link" data-target="about"><span class="sx">01</span><span class="st">个人简介</span></a>
         <a class="side-link" data-target="hobbies"><span class="sx">02</span><span class="st">兴趣爱好</span></a>
-        <a class="side-link" data-target="tags"><span class="sx">03</span><span class="st">标签分类</span></a>
-        <a class="side-link" data-target="map"><span class="sx">04</span><span class="st">旅行足迹</span></a>
-        <a class="side-link" data-target="fish"><span class="sx">05</span><span class="st">钓鱼图鉴</span></a>
-        <a class="side-link" data-target="journal"><span class="sx">06</span><span class="st">随笔</span></a>
+        <a class="side-link" data-target="map"><span class="sx">03</span><span class="st">旅行足迹</span></a>
+        <a class="side-link" data-target="fish"><span class="sx">04</span><span class="st">钓鱼图鉴</span></a>
+        <a class="side-link" data-target="journal"><span class="sx">05</span><span class="st">随笔</span></a>
       </nav>
       <div class="side-foot">
         <span class="sf-line"></span>
@@ -84,26 +83,13 @@
         </section>
       </section>
 
-      <!-- 03 标签分类 -->
-      <section class="panel" id="panel-tags">
-        <section class="section" id="tags">
-          <div class="container">
-            <p class="kicker">03 / 标签分类</p>
-            <h2 class="section-title"><span class="dot"></span>标签分类</h2>
-            <p class="hint">这些标签是全站的<b>交叉筛选器</b>：点一个，下方 <b>兴趣爱好 · 钓鱼种类 · 旅行足迹</b> 里带该标签的内容会保留、其余变灰；可多选，再次点击或点 ✕ 取消。</p>
-            <div class="tag-cloud" id="tagCloud"></div>
-            <div class="tag-filter-bar" id="tagFilterBar" hidden></div>
-          </div>
-        </section>
-      </section>
-
-      <!-- 04 旅行 & 垂钓 地图 -->
+      <!-- 03 旅行 & 垂钓 地图 -->
       <section class="panel" id="panel-map">
         <section class="section section-alt" id="map">
           <div class="container">
-            <p class="kicker">04 / 旅行足迹</p>
+            <p class="kicker">03 / 旅行足迹</p>
             <h2 class="section-title"><span class="dot"></span>旅行足迹</h2>
-            <p class="hint">下图为<b>中国地形图</b>（Esri 地形瓦片），叠加了<b>省界</b>（加粗，去过的省份高亮蓝）与<b>地级市界</b>（细线）。<b class="c-travel">琥珀色测绘标记</b> 为到过的地点，点击标记即可在右侧查看旅行记录（并联动下方列表），或用下方标签 / 省级行政区筛选。右上角可切换「地形晕渲 / 自然地理」两种地形底图。</p>
+            <p class="hint">下图为<b>中国地形图</b>（Esri 地形瓦片），叠加了<b>省界</b>（加粗，去过的省份高亮蓝）与<b>地级市界</b>（细线）。<b class="c-travel">琥珀色测绘标记</b> 为到过的地点，点击标记即可在右侧查看旅行记录（并联动下方列表），或用下方省级行政区筛选。右上角可切换「地形晕渲 / 自然地理」两种地形底图。</p>
 
             <div class="map-controls">
               <span class="map-stat" id="mapStat"></span>
@@ -133,9 +119,9 @@
       <section class="panel" id="panel-fish">
         <section class="section" id="fish">
           <div class="container">
-            <p class="kicker">05 / 钓鱼图鉴</p>
+            <p class="kicker">04 / 钓鱼图鉴</p>
             <h2 class="section-title"><span class="dot"></span>钓鱼种类记录</h2>
-            <p class="hint">钓到过的鱼种图鉴。点击顶部标签（如「垂钓」）可联动筛选相关卡片。鱼种、描述都能在 <code>js/data.js</code> 的 <code>fishSpecies</code> 里增删。</p>
+            <p class="hint">钓到过的鱼种图鉴。鱼种、描述都能在 <code>js/data.js</code> 的 <code>fishSpecies</code> 里增删。</p>
             <div class="fish-overview" id="fishOverview"></div>
             <div class="fish-orders" id="fishGrid"></div>
           </div>
@@ -146,7 +132,7 @@
       <section class="panel" id="panel-journal">
         <section class="section" id="journal">
           <div class="container">
-            <p class="kicker">06 / 随笔</p>
+            <p class="kicker">05 / 随笔</p>
             <h2 class="section-title"><span class="dot"></span>随笔 · Markdown</h2>
             <p class="hint">本区块内容由 Markdown 渲染，可在 <code>js/data.js</code> 的 <code>journal</code> 中自由增删。</p>
             <div id="journalList"></div>

@@ -75,61 +75,6 @@
     }).join("");
   }
 
-  /* ---------------- 标签云 ---------------- */
-  // 统计每个标签命中的条目数（兴趣 + 旅行 + 垂钓）
-  function tagCount(name) {
-    var n = 0;
-    (D.hobbies || []).forEach(function (h) { if ((h.tags || []).indexOf(name) >= 0) n++; });
-    (D.travel || []).forEach(function (t) { if ((t.tags || []).indexOf(name) >= 0) n++; });
-    (D.fishSpecies || []).forEach(function (f) { if ((f.tags || []).indexOf(name) >= 0) n++; });
-    return n;
-  }
-  var tagCloud = document.getElementById("tagCloud");
-  if (tagCloud && D.tags) {
-    tagCloud.innerHTML = D.tags.map(function (t) {
-      return (
-        '<span class="tag" data-tag="' + esc(t.name) + '" style="background:' + t.color + '">' +
-        esc(t.name) + '<span class="t-count">' + tagCount(t.name) + "</span></span>"
-      );
-    }).join("");
-    tagCloud.querySelectorAll(".tag").forEach(function (el) {
-      el.addEventListener("click", function () { toggleTag(el.getAttribute("data-tag")); });
-    });
-    updateTagBar();
-  }
-
-  function toggleTag(name) {
-    if (!name) return;
-    var el = tagCloud.querySelector('.tag[data-tag="' + name + '"]');
-    if (activeTags.has(name)) { activeTags.delete(name); if (el) el.classList.remove("active"); }
-    else { activeTags.add(name); if (el) el.classList.add("active"); }
-    applyTagFilter();
-    updateTagBar();
-  }
-
-  function updateTagBar() {
-    var bar = document.getElementById("tagFilterBar");
-    if (!bar) return;
-    if (activeTags.size === 0) { bar.hidden = true; bar.innerHTML = ""; return; }
-    var chips = [];
-    activeTags.forEach(function (n) {
-      chips.push('<button type="button" class="tf-chip" data-tag="' + esc(n) + '">' + esc(n) + ' <span class="tf-x">✕</span></button>');
-    });
-    bar.hidden = false;
-    bar.innerHTML = '<span class="tf-label">正在筛选</span>' + chips.join("") +
-      '<button type="button" class="tf-clear" id="tfClear">清除全部</button>';
-    bar.querySelectorAll(".tf-chip").forEach(function (b) {
-      b.addEventListener("click", function () { toggleTag(b.getAttribute("data-tag")); });
-    });
-    var clr = bar.querySelector("#tfClear");
-    if (clr) clr.addEventListener("click", function () {
-      activeTags.clear();
-      tagCloud.querySelectorAll(".tag.active").forEach(function (t) { t.classList.remove("active"); });
-      applyTagFilter();
-      updateTagBar();
-    });
-  }
-
   /* ---------------- 地图数据 ---------------- */
   function toPoint(item) {
     return {
@@ -592,7 +537,7 @@
   /* ---------------- 滚动渐显（按版块激活时触发 reveal） ---------------- */
   (function () {
     var sels = [".section-title", ".hint", ".about-card", ".contact-card",
-      ".hobby", ".tag", ".map-layout", ".prov-filter", ".record-list",
+      ".hobby", ".map-layout", ".prov-filter", ".record-list",
       ".prov-group", ".record", ".fish-order", ".journal-card"];
     var els = [];
     sels.forEach(function (s) {
