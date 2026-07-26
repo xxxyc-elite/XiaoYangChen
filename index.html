@@ -43,12 +43,13 @@
             <div class="avatar" id="avatar">肖</div>
             <p class="hero-kicker">规划 · 垂钓 · 旅行</p>
             <h1 id="heroName">肖阳晨</h1>
-            <p class="tagline" id="heroTagline">在路上的人，也在水边的人</p>
+            <p class="tagline" id="heroTagline">规划研究生 · 钓鱼佬 · 在路上</p>
             <p class="hero-loc" id="heroLoc">📍 中国 · 浙江</p>
             <div class="hero-actions">
               <a class="btn btn-primary" href="#map">查看足迹地图</a>
               <a class="btn btn-ghost" href="#about">关于我</a>
             </div>
+            <div class="hero-stats" id="heroStats"></div>
           </div>
         </section>
       </section>
@@ -89,7 +90,7 @@
           <div class="container">
             <p class="kicker">03 / 旅行足迹</p>
             <h2 class="section-title"><span class="dot"></span>旅行足迹</h2>
-            <p class="hint">下图为<b>中国地形图</b>（Esri 地形瓦片），叠加了<b>省界</b>（加粗，去过的省份高亮蓝）与<b>地级市界</b>（细线）。<b class="c-travel">琥珀色测绘标记</b> 为到过的地点，点击标记即可在右侧查看旅行记录（并联动下方列表），或用下方省级行政区筛选。右上角可切换「地形晕渲 / 自然地理」两种地形底图。</p>
+            <p class="hint">下图为<b>中国地形图</b>（Esri 地形瓦片），叠加了<b>省界</b>（加粗，去过的省份高亮蓝）与<b>地级市界</b>（细线）。<b class="c-travel">琥珀色测绘标记</b> 为到过的地点，点击标记即可在右侧查看旅行记录（并联动下方列表），或用下方省级行政区筛选。上方可切换「地形晕渲 / 自然地理」两种地形底图。</p>
 
             <div class="map-controls">
               <span class="map-stat" id="mapStat"></span>
@@ -120,7 +121,7 @@
         <section class="section" id="fish">
           <div class="container">
             <p class="kicker">04 / 钓鱼图鉴</p>
-            <h2 class="section-title"><span class="dot"></span>钓鱼种类记录</h2>
+            <h2 class="section-title"><span class="dot"></span>钓鱼图鉴</h2>
             <p class="hint">钓到过的鱼种图鉴。鱼种、描述都能在 <code>js/data.js</code> 的 <code>fishSpecies</code> 里增删。</p>
             <div class="fish-overview" id="fishOverview"></div>
             <div class="fish-orders" id="fishGrid"></div>

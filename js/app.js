@@ -42,6 +42,26 @@
     avatar.textContent = p.name.charAt(0);
   }
 
+  // 封面签名数据条（省份 / 鱼种 / 城市，全部由数据自动统计）
+  var heroStats = document.getElementById("heroStats");
+  if (heroStats) {
+    var tr = D.travel || [];
+    var provs = {}, cities = {};
+    tr.forEach(function (t) {
+      if (t.province) provs[t.province] = 1;
+      if (t.city) cities[t.city] = 1;
+    });
+    var statData = [
+      { num: Object.keys(provs).length, lbl: "省份" },
+      { num: (D.fishSpecies || []).length, lbl: "鱼种" },
+      { num: Object.keys(cities).length, lbl: "城市" }
+    ];
+    heroStats.innerHTML = statData.map(function (s) {
+      return '<div class="hstat"><span class="hstat-num">' + s.num +
+        '</span><span class="hstat-lbl">' + s.lbl + "</span></div>";
+    }).join("");
+  }
+
   // 个人简介（Markdown）
   var bioEl = document.getElementById("bio");
   if (bioEl) bioEl.innerHTML = md(p.bio || "");
