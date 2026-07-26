@@ -1,7 +1,7 @@
 /* =====================================================================
-   肖阳晨的个人网站 — 城市规划 · 工程制图风格（Light Blueprint / Drafting Sheet）
+   肖阳晨的个人网站 — 城市规划主题 · 亮色规划蓝（Light Planning-Blue）
    每版块独立西部风情动态背景 + 亮色毛玻璃卡片（白透玻璃 · 深墨字）
-   编号板块标题（柳公权楷书） · 图纸式内框线 · 等宽技术标注 · 琥珀色测绘标记
+   编号板块标题（柳公权楷书） · 等宽技术标注 · 琥珀色测绘标记
    ===================================================================== */
 
 /* 柳公权楷书字体（方正苏新诗柳楷简体，取自用户字体库） */
@@ -21,7 +21,7 @@
 .hero h1 { -webkit-text-stroke: 0.7px currentColor; text-shadow: 0 2px 3px rgba(27, 39, 53, .18); }
 
 :root {
-  /* ── Drafting sheet palette（亮色工程图纸） ── */
+  /* ── 规划蓝调色板（亮色） ── */
   --paper: #f5f8fc;            /* 浅蓝白纸（页面底） */
   --paper-2: #eef2f8;          /* 交替 section 底 */
   --surface: #ffffff;          /* 卡片面 */
@@ -40,7 +40,7 @@
   --amber-soft: rgba(194, 116, 10, .12);
 
   --line: #d4ddec;             /* 卡片描边 */
-  --line-inner: #e2e9f2;       /* 图纸内框线 */
+  --line-inner: #e2e9f2;       /* 卡片内描边（预留，当前未用于内框线） */
 
   /* 亮色毛玻璃 */
   --glass: rgba(255, 255, 255, .92);
@@ -169,7 +169,7 @@ a:hover { color: var(--amber); text-decoration: underline; }
 /* ---------------- 布局：左侧图签目录 + 单版块内容 ---------------- */
 .layout { display: flex; min-height: 100vh; }
 
-/* 左侧常驻「图签式」目录（亮色毛玻璃 · 图纸索引栏） */
+/* 左侧常驻「图签式」目录（亮色毛玻璃 · 索引栏） */
 .sidebar {
   position: fixed; top: 0; left: 0; bottom: 0; width: 268px; z-index: 40;
   background: rgba(255, 255, 255, .42);
@@ -358,15 +358,6 @@ a:hover { color: var(--amber); text-decoration: underline; }
 /* ---------------- 个人简介 ---------------- */
 .about-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 24px; }
 .about-card { padding: 40px 42px; position: relative; }
-.about-card::before {
-  content: ""; position: absolute; inset: 8px; border: 1px solid var(--glass-inner);
-  border-radius: calc(var(--radius) - 4px); pointer-events: none;
-}
-/* 统一图纸内框线到其他主要卡片，消除同一套卡片语言的割裂感 */
-.contact-card::before, .detail-body::before, .fish-order::before {
-  content: ""; position: absolute; inset: 8px; border: 1px solid var(--glass-inner);
-  border-radius: calc(var(--radius) - 4px); pointer-events: none;
-}
 .about-card .markdown { font-size: 17px; line-height: 1.72; color: var(--text); }
 .contact-card { padding: 34px 36px; position: relative; }
 .contact-card h3 { margin: 0 0 18px; font-size: 22px; font-weight: 600; letter-spacing: -.02em; color: var(--text); }
@@ -406,10 +397,6 @@ a:hover { color: var(--amber); text-decoration: underline; }
   transition: transform .4s var(--ease), box-shadow .4s var(--ease), border-color .3s;
   position: relative;
 }
-.hobby::before {
-  content: ""; position: absolute; inset: 8px; border: 1px solid var(--glass-inner);
-  border-radius: calc(var(--radius) - 4px); pointer-events: none;
-}
 .hobby:hover { transform: translateY(-8px); box-shadow: var(--float-hover); border-color: rgba(14, 99, 191, .4); }
 .hobby .h-icon { font-size: 38px; }
 .hobby .h-name { font-size: 22px; font-weight: 600; margin: 14px 0 8px; letter-spacing: -.02em; color: var(--text); }
@@ -446,10 +433,6 @@ a:hover { color: var(--amber); text-decoration: underline; }
 
 .map-layout { display: grid; grid-template-columns: 1.7fr 1fr; gap: 22px; align-items: stretch; }
 .map-card { padding: 14px; min-height: 540px; position: relative; }
-.map-card::before {
-  content: ""; position: absolute; inset: 8px; border: 1px solid var(--glass-inner);
-  border-radius: calc(var(--radius) - 4px); pointer-events: none;
-}
 #chinaMap { width: 100%; height: 560px; background: #e9eef5; border-radius: 16px; overflow: hidden; }
 .leaflet-container { border-radius: 16px; font-family: inherit; background: rgba(233, 238, 245, .7); }
 
@@ -637,10 +620,6 @@ a:hover { color: var(--amber); text-decoration: underline; }
   transition: transform .35s var(--ease), box-shadow .35s var(--ease), border-color .3s;
 }
 .journal-card:hover { transform: translateY(-4px); box-shadow: var(--float-hover); border-color: rgba(14, 99, 191, .32); }
-.journal-card::before {
-  content: ""; position: absolute; inset: 8px; border: 1px solid var(--glass-inner);
-  border-radius: calc(var(--radius) - 4px); pointer-events: none;
-}
 .journal-card .j-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
 .journal-card h3 { margin: 0; font-size: 26px; font-weight: 700; letter-spacing: -.01em; color: var(--text); font-family: "LiuGongquan", "STKaiti", "KaiTi", "Kaiti SC", "楷体", serif; }
 .journal-card .j-date { color: var(--muted); font-size: 14px; }
