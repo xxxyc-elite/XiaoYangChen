@@ -1,6 +1,6 @@
 /* =====================================================================
    肖阳晨的个人网站 — 城市规划 · 工程制图风格（Light Blueprint / Drafting Sheet）
-   动态雾中剪影背景 + 亮色毛玻璃卡片（白透玻璃 · 深墨字，保证清晰可读）
+   每版块独立西部风情动态背景 + 亮色毛玻璃卡片（白透玻璃 · 深墨字）
    编号板块标题（柳公权楷书） · 图纸式内框线 · 等宽技术标注 · 琥珀色测绘标记
    ===================================================================== */
 
@@ -51,12 +51,12 @@
 
 html { scroll-behavior: smooth; }
 
-/* ── 动态沉浸背景（雾中剪影 · 缓慢漂移缩放） ── */
+/* ── 全局底色（无图，各 panel 自带背景） ── */
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
     "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
-  background-color: var(--paper);
+  background-color: #1a1a1a;
   color: var(--text);
   line-height: 1.65;
   letter-spacing: -0.01em;
@@ -64,28 +64,77 @@ body {
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
-/* 底图：固定全屏 + 缓慢 ken burns 缩放漂移 */
-body::before {
+
+/* ═══════════ 每版块独立动态背景（Ken Burns × 西部风情） ═══════════ */
+/* 共享：全屏固定底图 + 强力缩放漂移动画 */
+.panel {
+  position: relative;
+  display: none; padding-bottom: 8px;
+}
+.panel::before {
   content: ""; position: fixed; inset: 0; z-index: -2; pointer-events: none;
-  background-image: url("../assets/bg.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  animation: bgDrift 24s ease-in-out infinite alternate;
+  opacity: 0;
+  transition: opacity .8s var(--ease);
 }
-@keyframes bgDrift {
-  0%   { transform: scale(1.05) translate(0, 0); }
-  50%  { transform: scale(1.12) translate(-0.5%, -0.3%); }
-  100% { transform: scale(1.08) translate(0.4%, 0.2%); }
+.panel.active::before { opacity: 1; }
+
+/* 各版块背景图分配 */
+#panel-hero::before    { background-image: url("../assets/bg-hero.jpg");    animation: kenBurnsA 18s ease-in-out infinite alternate; }
+#panel-about::before   { background-image: url("../assets/bg-about.jpg");   animation: kenBurnsB 20s ease-in-out infinite alternate; }
+#panel-hobbies::before { background-image: url("../assets/bg-hobby.jpg");   animation: kenBurnsC 22s ease-in-out infinite alternate; }
+#panel-map::before     { background-image: url("../assets/bg-travel.jpg");  animation: kenBurnsD 19s ease-in-out infinite alternate; }
+#panel-fish::before    { background-image: url("../assets/bg-fish.jpg");    animation: kenBurnsE 21s ease-in-out infinite alternate; }
+#panel-journal::before{ background-image: url("../assets/bg-journal.jpg"); animation: kenBurnsF 23s ease-in-out infinite alternate; }
+
+/* 四套 Ken Burns 轨迹（不同方向/幅度/节奏，避免机械重复） */
+@keyframes kenBurnsA {
+  0%   { transform: scale(1.06) translate(0, 0) rotate(0deg); }
+  40%  { transform: scale(1.14) translate(-1.2%, -0.6%) rotate(0.15deg); }
+  70%  { transform: scale(1.18) translate(0.6%, 0.3%) rotate(-0.1deg); }
+  100% { transform: scale(1.12) translate(-0.4%, 0.5%) rotate(0.05deg); }
 }
-/* 浅色薄纱遮罩：保留背景图呼吸感，同时保证文字清晰可读 */
+@keyframes kenBurnsB {
+  0%   { transform: scale(1.08) translate(0.5%, 0) rotate(0deg); }
+  40%  { transform: scale(1.15) translate(-0.8%, -1%) rotate(-0.12deg); }
+  70%  { transform: scale(1.19) translate(0.3%, 0.7%) rotate(0.08deg); }
+  100% { transform: scale(1.13) translate(-0.6%, -0.3%) rotate(-0.04deg); }
+}
+@keyframes kenBurnsC {
+  0%   { transform: scale(1.05) translate(0, 0.5%) rotate(0deg); }
+  40%  { transform: scale(1.13) translate(-1%, -0.4%) rotate(0.1deg); }
+  70%  { transform: scale(1.17) translate(0.8%, 0.2%) rotate(-0.08deg); }
+  100% { transform: scale(1.11) translate(-0.3%, -0.6%) rotate(0.06deg); }
+}
+@keyframes kenBurnsD {
+  0%   { transform: scale(1.07) translate(-0.5%, 0) rotate(0deg); }
+  40%  { transform: scale(1.16) translate(0.6%, -0.8%) rotate(-0.14deg); }
+  70%  { transform: scale(1.20) translate(-0.4%, 0.5%) rotate(0.09deg); }
+  100% { transform: scale(1.12) translate(0.5%, -0.2%) rotate(-0.05deg); }
+}
+@keyframes kenBurnsE {
+  0%   { transform: scale(1.06) translate(0, -0.5%) rotate(0deg); }
+  40%  { transform: scale(1.14) translate(-0.9%, 0.6%) rotate(0.11deg); }
+  70%  { transform: scale(1.18) translate(0.5%, -0.3%) rotate(-0.07deg); }
+  100% { transform: scale(1.11) translate(-0.5%, 0.4%) rotate(0.04deg); }
+}
+@keyframes kenBurnsF {
+  0%   { transform: scale(1.09) translate(0.4%, 0.4%) rotate(0deg); }
+  40%  { transform: scale(1.15) translate(-0.6%, -0.6%) rotate(-0.1deg); }
+  70%  { transform: scale(1.19) translate(0.7%, 0.3%) rotate(0.12deg); }
+  100% { transform: scale(1.13) translate(-0.3%, -0.5%) rotate(-0.03deg); }
+}
+
+/* 全局薄纱遮罩（浮在所有背景之上、内容之下） */
 body::after {
   content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background:
     linear-gradient(180deg,
-      rgba(245, 248, 252, .64) 0%,
-      rgba(245, 248, 252, .42) 46%,
-      rgba(245, 248, 252, .58) 100%);
+      rgba(245, 248, 252, .58) 0%,
+      rgba(245, 248, 252, .38) 42%,
+      rgba(245, 248, 252, .52) 100%);
 }
 
 a { color: var(--plan); text-decoration: none; }
@@ -138,7 +187,6 @@ a:hover { color: var(--amber); text-decoration: underline; }
 
 /* 内容区：一次只显示一个版块（flex 列，页脚贴底） */
 .content { margin-left: 268px; width: calc(100% - 268px); min-height: 100vh; display: flex; flex-direction: column; }
-.panel { display: none; padding-bottom: 8px; }
 .panel.active { display: block; }
 .panel .section { padding: clamp(44px, 6vw, 68px) 0; }
 .menu-btn { display: none; }
