@@ -9,6 +9,12 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <!-- 高级动态视觉层（指针光晕 / 极光 / 光标环 / 滚动进度条），全部叠加于内容之下，不改动内容与背景 -->
+  <div class="fx-spotlight" id="fxSpotlight" aria-hidden="true"></div>
+  <div class="fx-aurora" aria-hidden="true"><span class="a1"></span><span class="a2"></span><span class="a3"></span></div>
+  <div class="fx-cursor" id="fxCursor" aria-hidden="true"></div>
+  <div class="fx-progress" id="fxProgress" aria-hidden="true"></div>
+
   <div class="layout">
     <!-- 左侧常驻「图签式」目录 -->
     <aside class="sidebar" id="sidebar">

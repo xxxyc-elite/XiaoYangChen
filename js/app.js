@@ -8,6 +8,9 @@
   var D = window.SITE_DATA;
   if (!D) { console.error("未找到 SITE_DATA，请检查 js/data.js"); return; }
 
+  // 是否偏好「减少动态效果」（顶部声明，供后续 FX 初始化使用）
+  var fxReduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
   // Markdown 渲染配置
   if (window.marked && marked.parse) {
     marked.setOptions({ gfm: true, breaks: true });
@@ -597,6 +600,7 @@
       }
     }
     revealPanel(panel);
+    if (typeof FXpanel === "function") FXpanel(target);
   }
 
   sideLinks.forEach(function (l) {
@@ -621,6 +625,7 @@
   buildProvFilter();
   buildRecords();
   updateMapStat(travelPts.length);
+  initFX();
 
   /* ---------------- 滚动渐显（按版块激活时触发 reveal） ---------------- */
   (function () {
@@ -637,6 +642,106 @@
     if (!document.getElementById("panel-" + initial)) initial = "hero";
     showPanel(initial);
   })();
+
+  /* ---------------- 高级动态视觉层（FX） ---------------- */
+  function initFX() {
+    // 1) 给可交互卡片打标：聚光（全部）+ 3D 倾斜（主卡片）
+    var tiltSel = ".hobby, .fish, .record, .journal-card, .about-card, .contact-card, .fish-order";
+    var allSel = tiltSel + ", .prov-chip, .hero-stats, .detail-card, .map-card, .avatar";
+    document.querySelectorAll(allSel).forEach(function (el) {
+      el.classList.add("fx-card");
+      if (el.matches && el.matches(tiltSel)) el.classList.add("fx-tilt");
+    });
+
+    var spot = document.getElementById("fxSpotlight");
+    var cur = document.getElementById("fxCursor");
+    var prog = document.getElementById("fxProgress");
+
+    if (!fxReduce) {
+      var mx = window.innerWidth / 2, my = window.innerHeight / 2, lx = mx, ly = my, raf = false;
+      function renderCursor() {
+        lx += (mx - lx) * 0.2; ly += (my - ly) * 0.2;
+        if (cur) cur.style.transform = "translate(" + lx + "px," + ly + "px)";
+        raf = false;
+      }
+      window.addEventListener("pointermove", function (e) {
+        mx = e.clientX; my = e.clientY;
+        if (spot) { spot.style.setProperty("--mx", mx + "px"); spot.style.setProperty("--my", my + "px"); }
+        if (cur && !raf) { raf = true; requestAnimationFrame(renderCursor); }
+        // 卡片聚光 + 倾斜（指针跟踪）
+        var card = e.target.closest ? e.target.closest(".fx-card") : null;
+        if (card) {
+          var r = card.getBoundingClientRect();
+          var px = ((e.clientX - r.left) / r.width) * 100;
+          var py = ((e.clientY - r.top) / r.height) * 100;
+          card.style.setProperty("--cx", px + "%");
+          card.style.setProperty("--cy", py + "%");
+          if (card.classList.contains("fx-tilt")) {
+            var rx = ((py - 50) / 50) * -5, ry = ((px - 50) / 50) * 5;
+            card.style.transform = "perspective(900px) rotateX(" + rx.toFixed(2) +
+              "deg) rotateY(" + ry.toFixed(2) + "deg) translateY(-6px)";
+          }
+        }
+        // 光标环在可交互元素上放大
+        if (cur) {
+          var hot = e.target.closest && e.target.closest("a, button, .side-link, .prov-chip, .record, .fish, .hobby, .journal-card, .tag-chip, .btn, [data-target]");
+          cur.classList.toggle("hover", !!hot);
+        }
+      }, { passive: true });
+
+      window.addEventListener("pointerdown", function () { if (cur) cur.classList.add("down"); });
+      window.addEventListener("pointerup", function () { if (cur) cur.classList.remove("down"); });
+
+      // 离开卡片时复位倾斜
+      document.querySelectorAll(".fx-tilt").forEach(function (el) {
+        el.addEventListener("mouseleave", function () { el.style.transform = ""; });
+      });
+
+      // 磁性按钮：轻微追随指针
+      document.querySelectorAll(".btn").forEach(function (b) {
+        b.addEventListener("pointermove", function (e) {
+          var r = b.getBoundingClientRect();
+          var dx = (e.clientX - (r.left + r.width / 2)) * 0.22;
+          var dy = (e.clientY - (r.top + r.height / 2)) * 0.32;
+          b.style.transform = "translate(" + dx.toFixed(1) + "px," + dy.toFixed(1) + "px)";
+        });
+        b.addEventListener("mouseleave", function () { b.style.transform = ""; });
+      });
+    }
+
+    // 滚动进度条
+    function updateProgress() {
+      if (!prog) return;
+      var h = document.documentElement.scrollHeight - window.innerHeight;
+      prog.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + "%";
+    }
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    updateProgress();
+  }
+
+  function FXpanel(target) {
+    if (target === "hero") countUpHero();
+  }
+
+  function countUpHero() {
+    var nums = document.querySelectorAll("#heroStats .hstat-num");
+    nums.forEach(function (el) {
+      var target = parseInt(el.textContent, 10);
+      if (isNaN(target)) return;
+      if (fxReduce) { el.textContent = target; return; }
+      el.textContent = "0";
+      var dur = 1100, start = null;
+      function step(ts) {
+        if (start === null) start = ts;
+        var p = Math.min((ts - start) / dur, 1);
+        var eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(target * eased);
+        if (p < 1) requestAnimationFrame(step);
+        else el.textContent = target;
+      }
+      requestAnimationFrame(step);
+    });
+  }
 
   /* ---------------- 工具 ---------------- */
   function setText(id, txt) { var el = document.getElementById(id); if (el && txt != null) el.textContent = txt; }

@@ -677,7 +677,74 @@ a:hover { color: var(--amber); text-decoration: underline; }
   /* 尊重「减少动态」偏好：停掉持续背景动画与标记脉冲，避免眩晕 */
   .panel.active::before { animation: none !important; }
   .travel-dot .dot-core { animation: none; }
+  /* 高级动态视觉层：尊重「减少动态」偏好，全部关闭 */
+  .fx-spotlight, .fx-aurora, .fx-cursor { display: none; }
+  .panel.active { animation: none; }
+  .fx-card::before { transition: none; opacity: 0 !important; }
 }
+
+/* ═══════════ 高级动态视觉层（叠加于内容之下，不改动内容/背景，保证文字清晰） ═══════════ */
+/* 全局指针光晕：screen 混合只提亮、不压暗，深色正文始终可读 */
+.fx-spotlight {
+  position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 35%),
+    rgba(120, 178, 244, .20), rgba(120, 178, 244, 0) 62%);
+  mix-blend-mode: screen;
+}
+/* 极光：缓慢游移的低饱和色块，给页面增添“活”的空气感（模糊 + 低透明度，置于文字之下） */
+.fx-aurora { position: fixed; inset: -15%; z-index: -1; pointer-events: none; filter: blur(70px); opacity: .5; }
+.fx-aurora span { position: absolute; border-radius: 50%; mix-blend-mode: screen; will-change: transform; }
+.fx-aurora .a1 { width: 44vw; height: 44vw; left: -6vw; top: -8vh; background: radial-gradient(circle, rgba(14,99,191,.55), transparent 70%); animation: aurora1 24s ease-in-out infinite; }
+.fx-aurora .a2 { width: 38vw; height: 38vw; right: -4vw; top: 18vh; background: radial-gradient(circle, rgba(194,116,10,.30), transparent 70%); animation: aurora2 28s ease-in-out infinite; }
+.fx-aurora .a3 { width: 40vw; height: 40vw; left: 20vw; bottom: -16vh; background: radial-gradient(circle, rgba(42,127,214,.42), transparent 70%); animation: aurora3 32s ease-in-out infinite; }
+@keyframes aurora1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(7vw,5vh) scale(1.18); } }
+@keyframes aurora2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-6vw,-7vh) scale(1.12); } }
+@keyframes aurora3 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(5vw,-6vh) scale(1.22); } }
+
+/* 顶部滚动进度条 */
+.fx-progress {
+  position: fixed; top: 0; left: 0; height: 3px; width: 0; z-index: 80; border-radius: 0 3px 3px 0;
+  background: linear-gradient(90deg, var(--plan), #74b4ff, var(--amber));
+  box-shadow: 0 0 14px rgba(14, 99, 191, .55);
+}
+
+/* 装饰性光标环（不替换系统光标，仅作点缀） */
+.fx-cursor {
+  position: fixed; top: 0; left: 0; width: 26px; height: 26px; margin: -13px 0 0 -13px;
+  border: 1.5px solid rgba(14, 99, 191, .55); border-radius: 50%; pointer-events: none; z-index: 90;
+  transition: width .2s var(--ease), height .2s var(--ease), margin .2s var(--ease),
+    background .2s, border-color .2s, opacity .2s;
+}
+.fx-cursor.hover { width: 46px; height: 46px; margin: -23px 0 0 -23px; background: rgba(14,99,191,.10); border-color: var(--plan); }
+.fx-cursor.down { width: 20px; height: 20px; margin: -10px 0 0 -10px; }
+@media (pointer: coarse) { .fx-cursor { display: none; } }
+
+/* 卡片悬停聚光：指针位置投出柔光（绘于文字之下，不影响可读） */
+.fx-card { position: relative; }
+.fx-card::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 0;
+  background: radial-gradient(360px circle at var(--cx, 50%) var(--cy, 50%),
+    rgba(110, 170, 240, .20), rgba(110, 170, 240, 0) 46%);
+  opacity: 0; transition: opacity .35s var(--ease);
+}
+.fx-card:hover::before { opacity: 1; }
+
+/* 版块切换入场：轻微上浮 + 缩放 + 淡入 */
+.panel.active { animation: panelIn .7s var(--ease) both; }
+@keyframes panelIn {
+  from { opacity: 0; transform: translateY(16px) scale(.992); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* 板块大标题 / 姓名：淡色微光扫过（浅蓝白高光，提升而非削弱可读性） */
+.hero h1, .section-title {
+  background: linear-gradient(100deg, var(--text) 42%, #dbe9fa 50%, var(--text) 58%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: var(--text);
+  animation: titleShine 7s ease-in-out infinite;
+}
+@keyframes titleShine { 0%,100% { background-position: 130% 0; } 50% { background-position: -30% 0; } }
 
 /* ---------------- 响应式 ---------------- */
 @media (max-width: 1024px) {
