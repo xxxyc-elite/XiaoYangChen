@@ -646,7 +646,7 @@
   /* ---------------- 高级动态视觉层（FX） ---------------- */
   function initFX() {
     // 1) 给可交互卡片打标：聚光（全部）+ 3D 倾斜（主卡片）
-    var tiltSel = ".hobby, .fish, .record, .journal-card, .about-card, .contact-card, .fish-order";
+    var tiltSel = ".hobby, .fish, .record, .journal-card, .about-card, .contact-card";
     var allSel = tiltSel + ", .prov-chip, .hero-stats, .detail-card, .map-card, .avatar";
     document.querySelectorAll(allSel).forEach(function (el) {
       el.classList.add("fx-card");
