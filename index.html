@@ -59,7 +59,7 @@
         <section class="section" id="about">
           <div class="container">
             <p class="kicker">01 / 个人简介</p>
-            <h2 class="section-title"><span class="dot"></span>个人简介</h2>
+            <h2 class="section-title">个人简介</h2>
             <div class="about-grid">
               <div class="card about-card">
                 <div class="markdown" id="bio"></div>
@@ -75,10 +75,11 @@
 
       <!-- 02 兴趣爱好 -->
       <section class="panel" id="panel-hobbies">
-        <section class="section section-alt" id="hobbies">
+        <section class="section" id="hobbies">
           <div class="container">
             <p class="kicker">02 / 兴趣爱好</p>
-            <h2 class="section-title"><span class="dot"></span>兴趣爱好</h2>
+            <h2 class="section-title">兴趣爱好</h2>
+            <div class="tag-filter" id="tagFilterHobby"></div>
             <div class="hobby-grid" id="hobbyGrid"></div>
           </div>
         </section>
@@ -86,10 +87,10 @@
 
       <!-- 03 旅行 & 垂钓 地图 -->
       <section class="panel" id="panel-map">
-        <section class="section section-alt" id="map">
+        <section class="section" id="map">
           <div class="container">
             <p class="kicker">03 / 旅行足迹</p>
-            <h2 class="section-title"><span class="dot"></span>旅行足迹</h2>
+            <h2 class="section-title">旅行足迹</h2>
             <p class="hint">下图为<b>中国地形图</b>（Esri 地形瓦片），叠加了<b>省界</b>（加粗，去过的省份高亮蓝）与<b>地级市界</b>（细线）。<b class="c-travel">琥珀色测绘标记</b> 为到过的地点，点击标记即可在右侧查看旅行记录（并联动下方列表），或用下方省级行政区筛选。上方可切换「地形晕渲 / 自然地理」两种地形底图。</p>
 
             <div class="map-controls">
@@ -116,25 +117,26 @@
         </section>
       </section>
 
-      <!-- 05 钓鱼种类记录 -->
+      <!-- 05 钓鱼图鉴 -->
       <section class="panel" id="panel-fish">
         <section class="section" id="fish">
           <div class="container">
             <p class="kicker">04 / 钓鱼图鉴</p>
-            <h2 class="section-title"><span class="dot"></span>钓鱼图鉴</h2>
+            <h2 class="section-title">钓鱼图鉴</h2>
             <p class="hint">钓到过的鱼种图鉴。鱼种、描述都能在 <code>js/data.js</code> 的 <code>fishSpecies</code> 里增删。</p>
+            <div class="tag-filter" id="tagFilterFish"></div>
             <div class="fish-overview" id="fishOverview"></div>
             <div class="fish-orders" id="fishGrid"></div>
           </div>
         </section>
       </section>
 
-      <!-- 06 随笔 / Markdown -->
+      <!-- 06 随笔 -->
       <section class="panel" id="panel-journal">
         <section class="section" id="journal">
           <div class="container">
             <p class="kicker">05 / 随笔</p>
-            <h2 class="section-title"><span class="dot"></span>随笔 · Markdown</h2>
+            <h2 class="section-title">随笔 · Markdown</h2>
             <p class="hint">本区块内容由 Markdown 渲染，可在 <code>js/data.js</code> 的 <code>journal</code> 中自由增删。</p>
             <div id="journalList"></div>
           </div>
@@ -150,9 +152,7 @@
     </main>
   </div>
 
-  <!-- 依赖（Leaflet 本地化；边界数据本地；地形瓦片需联网） -->
-  <script src="js/china-prov-geo.js"></script>
-  <script src="js/china-city-geo.js"></script>
+  <!-- 依赖（Leaflet 本地化；边界数据本地，首次打开「足迹」版块时懒加载；地形瓦片需联网） -->
   <script src="js/leaflet.js"></script>
   <script src="js/marked.min.js"></script>
   <script src="js/data.js"></script>

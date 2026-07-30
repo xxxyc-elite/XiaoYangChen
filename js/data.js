@@ -12,7 +12,6 @@ window.SITE_DATA = {
   /* ---------- 1. 个人简介 ---------- */
   profile: {
     name: "肖阳晨",
-    englishName: "阳晨·肖",
     tagline: "规划研究生 · 钓鱼佬 · 在路上",
     avatar: "assets/avatar.png",
     location: "中国 · 江西 · 南昌",
@@ -39,7 +38,7 @@ window.SITE_DATA = {
   },
 
   /* ---------- 2. 兴趣爱好 ---------- */
-  // icon 可用 emoji；tags 为可选备注（当前未接入筛选，保留以备后用）
+  // icon 可用 emoji；tags 用于「标签筛选」联动（点击兴趣 / 鱼种卡片上的标签即可筛选）
   hobbies: [
     {
       icon: "🎣",
@@ -61,9 +60,9 @@ window.SITE_DATA = {
     },
   ],
 
-  /* ---------- 3. 标签（预留，当前未接入筛选） ----------
-   * 这一组标签目前仅作为内容备注保留，站点暂未做标签云 / 筛选交互。
-   * 若日后想恢复“点击标签联动筛选”，可在此扩展；颜色字段可自由改。
+  /* ---------- 3. 标签（已接入兴趣 / 鱼种卡片联动筛选） ----------
+   * tags 数组会渲染成筛选条，点击标签即可高亮匹配的兴趣 / 鱼种卡片，
+   * 并隐藏无匹配的分组。color 字段用于标签 chip 配色，可自由改。
    */
   tags: [
     { name: "户外", color: "#2f9e6f" },
@@ -78,7 +77,7 @@ window.SITE_DATA = {
 
   /* ---------- 4. 旅行去过的地方 ----------
    * type 固定为 "travel"。coord = [经度, 纬度]。
-   * note 支持 Markdown。tags 为可选备注（当前未接入筛选，保留以备后用）。
+   * note 支持 Markdown。tags 为可选备注（用于兴趣 / 鱼种标签筛选联动）。
    * province / city / county = 行政归属（省 / 市 / 县或区），用于「省市县分类」与省级筛选。
    * img = 该地点配图地址（本地路径如 "assets/nanchang.jpg" 或网络图链）；留空则显示「配图待添加」占位。
    * 行政归属说明：直辖市/特别行政区只填 province（city/county 留空）；县级市/县填到 county。
@@ -92,7 +91,7 @@ window.SITE_DATA = {
       province: "江西省",
       city: "南昌市",
       county: "南昌县",
-      img: "assets/nanchang.png",
+      img: "assets/nanchang.jpg",
       note: "出生地。",
     },
     {
@@ -103,7 +102,7 @@ window.SITE_DATA = {
       province: "广东省",
       city: "深圳市",
       county: "",
-      img: "assets/shenzhen.png",
+      img: "assets/shenzhen.jpg",
       note: "随父母到姑姑家过年，游玩大梅沙与世界之窗。",
     },
     {
@@ -114,7 +113,7 @@ window.SITE_DATA = {
       province: "香港特别行政区",
       city: "",
       county: "",
-      img: "assets/xianggang.png",
+      img: "assets/xianggang.jpg",
       note: "随姑姑一家赴港游玩。",
     },
     {
@@ -125,7 +124,7 @@ window.SITE_DATA = {
       province: "浙江省",
       city: "金华市",
       county: "东阳市",
-      img: "assets/hengdian.png",
+      img: "assets/hengdian.jpg",
       note: "暑假前往影视城游览。",
     },
     {
@@ -136,7 +135,7 @@ window.SITE_DATA = {
       province: "湖南省",
       city: "长沙市",
       county: "",
-      img: "assets/changsha.png",
+      img: "assets/changsha.jpg",
       note: "暑假游张家界，顺路途经长沙。",
     },
     {
@@ -147,7 +146,7 @@ window.SITE_DATA = {
       province: "湖南省",
       city: "张家界市",
       county: "",
-      img: "assets/zhangjiajie.png",
+      img: "assets/zhangjiajie.jpg",
       note: "暑假游张家界。",
     },
     {
@@ -158,7 +157,7 @@ window.SITE_DATA = {
       province: "江西省",
       city: "吉安市",
       county: "井冈山市",
-      img: "assets/jinggangshan.png",
+      img: "assets/jinggangshan.jpg",
       note: "与父母一同红色之旅。",
     },
     {
@@ -169,7 +168,7 @@ window.SITE_DATA = {
       province: "北京市",
       city: "",
       county: "",
-      img: "assets/beijing.png",
+      img: "assets/beijing.jpg",
       note: "随姑姑一家暑期出游。",
     },
     {
@@ -180,7 +179,7 @@ window.SITE_DATA = {
       province: "安徽省",
       city: "黄山市",
       county: "",
-      img: "assets/huangshan.png",
+      img: "assets/huangshan.jpg",
       note: "与父母同游黄山。",
     },
     {
@@ -191,7 +190,7 @@ window.SITE_DATA = {
       province: "江西省",
       city: "九江市",
       county: "武宁县",
-      img: "assets/lushanxihai.png",
+      img: "assets/lushanxihai.jpg",
       note: "泡温泉休闲游。",
     },
     {
@@ -202,7 +201,7 @@ window.SITE_DATA = {
       province: "陕西省",
       city: "西安市",
       county: "",
-      img: "assets/xian.png",
+      img: "assets/xian.jpg",
       note: "与妈妈、奶奶一同出游。",
     },
     {
@@ -213,7 +212,7 @@ window.SITE_DATA = {
       province: "江西省",
       city: "宜春市",
       county: "袁州区",
-      img: "assets/mingyueshan.png",
+      img: "assets/mingyueshan.jpg",
       note: "与父母暑期登山。",
     },
     {
@@ -224,7 +223,7 @@ window.SITE_DATA = {
       province: "湖北省",
       city: "武汉市",
       county: "",
-      img: "assets/wuhan.png",
+      img: "assets/wuhan.jpg",
       note: "高考结束后与高中同学结伴出游。",
     },
     {
@@ -235,7 +234,7 @@ window.SITE_DATA = {
       province: "湖北省",
       city: "宜昌市",
       county: "",
-      img: "assets/yichang.png",
+      img: "assets/yichang.jpg",
       note: "高考结束后与高中同学结伴出游。",
     },
     {
@@ -246,7 +245,7 @@ window.SITE_DATA = {
       province: "湖北省",
       city: "神农架林区",
       county: "",
-      img: "assets/shennongjia.png",
+      img: "assets/shennongjia.jpg",
       note: "高考结束后与高中同学结伴出游。",
     },
     {
@@ -257,7 +256,7 @@ window.SITE_DATA = {
       province: "江西省",
       city: "上饶市",
       county: "婺源县",
-      img: "assets/wuyuan.png",
+      img: "assets/wuyuan.jpg",
       note: "与同学前往素描写生。",
     },
     {
@@ -268,7 +267,7 @@ window.SITE_DATA = {
       province: "江西省",
       city: "萍乡市",
       county: "芦溪县",
-      img: "assets/wugongshan.png",
+      img: "assets/wugongshan.jpg",
       note: "与初中同学一同爬山，高山草甸云海绝美。",
     },
     {
@@ -279,7 +278,7 @@ window.SITE_DATA = {
       province: "江西省",
       city: "九江市",
       county: "庐山市",
-      img: "assets/lushan.png",
+      img: "assets/lushan.jpg",
       note: "与同学前往水彩写生。",
     },
     {
@@ -290,7 +289,7 @@ window.SITE_DATA = {
       province: "安徽省",
       city: "合肥市",
       county: "",
-      img: "assets/hefei.png",
+      img: "assets/hefei.jpg",
       note: "三次参加快题集训。",
     },
     {
@@ -301,7 +300,7 @@ window.SITE_DATA = {
       province: "安徽省",
       city: "安庆市",
       county: "桐城市",
-      img: "assets/tongcheng.png",
+      img: "assets/tongcheng.jpg",
       note: "暑假与父母同游桐城。",
     },
     {
@@ -312,7 +311,7 @@ window.SITE_DATA = {
       province: "江西省",
       city: "抚州市",
       county: "资溪县",
-      img: "assets/dajueshan.png",
+      img: "assets/dajueshan.jpg",
       note: "与初中同学前往漂流，夏日清凉刺激。",
     },
     {
@@ -323,7 +322,7 @@ window.SITE_DATA = {
       province: "江西省",
       city: "宜春市",
       county: "靖安县",
-      img: "assets/jingan.png",
+      img: "assets/jingan.jpg",
       note: "与姑姑一家度假休闲。",
     },
     {
@@ -334,7 +333,7 @@ window.SITE_DATA = {
       province: "湖北省",
       city: "荆门市",
       county: "钟祥市",
-      img: "assets/zhongxiang.png",
+      img: "assets/zhongxiang.jpg",
       note: "与女朋友一同旅游。",
     },
     {
@@ -345,7 +344,7 @@ window.SITE_DATA = {
       province: "河南省",
       city: "信阳市",
       county: "",
-      img: "assets/xinyang.png",
+      img: "assets/xinyang.jpg",
       note: "与女朋友短途游玩。",
     },
     {
@@ -356,7 +355,7 @@ window.SITE_DATA = {
       province: "陕西省",
       city: "商洛市",
       county: "",
-      img: "assets/shangluo.png",
+      img: "assets/shangluo.jpg",
       note: "赴商洛探望女朋友。",
     },
     {
@@ -367,7 +366,7 @@ window.SITE_DATA = {
       province: "江苏省",
       city: "苏州市",
       county: "",
-      img: "assets/suzhou.png",
+      img: "assets/suzhou.jpg",
       note: "参加研究生入学考试初试。",
     },
     {
@@ -378,7 +377,7 @@ window.SITE_DATA = {
       province: "湖北省",
       city: "十堰市",
       county: "丹江口市",
-      img: "assets/wudangshan.png",
+      img: "assets/wudangshan.jpg",
       note: "与女朋友同游。",
     },
     {
@@ -389,7 +388,7 @@ window.SITE_DATA = {
       province: "江西省",
       city: "抚州市",
       county: "南城县",
-      img: "assets/shangtangcun.png",
+      img: "assets/shangtangcun.jpg",
       note: "调研上唐村古村落，完成毕业设计。",
     },
     {
@@ -400,7 +399,7 @@ window.SITE_DATA = {
       province: "湖北省",
       city: "襄阳市",
       county: "",
-      img: "assets/xiangyang.png",
+      img: "assets/xiangyang.jpg",
       note: "赴武当山前落地襄阳，短暂停留。",
     },
     {
@@ -411,7 +410,7 @@ window.SITE_DATA = {
       province: "山东省",
       city: "青岛市",
       county: "",
-      img: "assets/qingdao.png",
+      img: "assets/qingdao.jpg",
       note: "拜访未来导师韩青教授并汇报工作。",
     },
     {
@@ -422,7 +421,7 @@ window.SITE_DATA = {
       province: "湖北省",
       city: "黄冈市",
       county: "麻城市",
-      img: "assets/macheng.png",
+      img: "assets/macheng.jpg",
       note: "与女朋友一同旅游。",
     },
     {
@@ -433,7 +432,7 @@ window.SITE_DATA = {
       province: "河南省",
       city: "洛阳市",
       county: "",
-      img: "assets/luoyang.png",
+      img: "assets/luoyang.jpg",
       note: "与考研快题的同学们同游。",
     },
     {
@@ -444,7 +443,7 @@ window.SITE_DATA = {
       province: "河南省",
       city: "开封市",
       county: "",
-      img: "assets/kaifeng.png",
+      img: "assets/kaifeng.jpg",
       note: "与考研快题的同学们同游。",
     },
   ],
@@ -495,7 +494,7 @@ window.SITE_DATA = {
       tags: ["垂钓", "淡水"],
       record: "20cm+",
       story: "鱼口轻时白条不断，解闷神器。",
-      img: "assets/baitiao.png",
+      img: "assets/baitiao.jpg",
     },
     {
       emoji: "🐟",
@@ -506,7 +505,7 @@ window.SITE_DATA = {
       tags: ["垂钓", "淡水"],
       record: "",
       story: "路亚亮片常炸水追饵，手感刺激。",
-      img: "assets/mengguhongbo.png",
+      img: "assets/mengguhongbo.jpg",
     },
     {
       emoji: "🐟",
@@ -517,7 +516,7 @@ window.SITE_DATA = {
       tags: ["垂钓", "淡水"],
       record: "最大 3 斤+",
       story: "清晨连竿翘嘴，水面炸水那一刻最上头。",
-      img: "assets/qiaozuiboba.png",
+      img: "assets/qiaozuiboba.jpg",
     },
     {
       emoji: "🐟",
@@ -528,7 +527,7 @@ window.SITE_DATA = {
       tags: ["垂钓", "淡水"],
       record: "30cm+",
       story: "溪流缓水区常见，吃口干净利落。",
-      img: "assets/chiyanzun.png",
+      img: "assets/chiyanzun.jpg",
     },
     {
       emoji: "🐟",
@@ -550,7 +549,7 @@ window.SITE_DATA = {
       tags: ["垂钓", "淡水"],
       record: "6–8cm",
       story: "溪流浅滩群游，细线小钩最对味。",
-      img: "assets/tiaowenxiaoba.png",
+      img: "assets/tiaowenxiaoba.jpg",
     },
     {
       emoji: "🐟",
@@ -594,7 +593,7 @@ window.SITE_DATA = {
       tags: ["垂钓", "淡水"],
       record: "6–8cm",
       story: "清澈浅水常见，颜色好看，适合生态观察。",
-      img: "assets/pangpi.png",
+      img: "assets/pangpi.jpg",
     },
     {
       emoji: "🐟",
@@ -605,7 +604,7 @@ window.SITE_DATA = {
       tags: ["垂钓", "淡水"],
       record: "15cm",
       story: "与鲫鱼同获，群口时一个窝连拉。",
-      img: "assets/bianyu.png",
+      img: "assets/bianyu.jpg",
     },
     // ===== 鲤形目 Cypriniformes · 鳅科 Cobitidae =====
     {
@@ -629,7 +628,7 @@ window.SITE_DATA = {
       tags: ["垂钓", "淡水"],
       record: "20cm",
       story: "夏夜守钓，一口闷竿最带劲。",
-      img: "assets/nianyu.png",
+      img: "assets/nianyu.jpg",
     },
     // ===== 鲇形目 Siluriformes · 鲿科 Bagridae =====
     {
@@ -641,7 +640,7 @@ window.SITE_DATA = {
       tags: ["垂钓", "淡水"],
       record: "20cm",
       story: "被硬刺扎过手，麻半天，但肉嫩鲜甜。",
-      img: "assets/huangsangyu.png",
+      img: "assets/huangsangyu.jpg",
     },
     // ===== 合鳃目 Synbranchiformes · 合鳃科 Synbranchidae =====
     {
@@ -713,10 +712,10 @@ window.SITE_DATA = {
       title: "关于这个网站",
       date: "2026-07-15",
       content: [
-        "这个站点完全用 **静态网页** 搭成，地图用的是 ECharts + 阿里 DataV 的中国地理数据。",
+        "这个站点完全用 **静态网页** 搭成：地图用 **Leaflet** 叠加本地的中国省界 / 地级市界 GeoJSON（`js/china-prov-geo.js`、`js/china-city-geo.js`），地形底图来自 Esri 瓦片。",
         "",
         "## 为什么自己做",
-        "- 现成的博客平台太重，我想把 *旅行* 和 *垂钓* 放在同一张地图上；",
+        "- 现成的博客平台太重，我想把走过的 *旅行* 足迹落在一张中国地图上；",
         "- 顺手练了练前端；",
         "- 数据都在 `js/data.js` 里，想改随时改。",
         "",

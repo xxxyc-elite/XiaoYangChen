@@ -17,7 +17,7 @@
     return window.marked ? marked.parse(String(text)) : String(text);
   }
 
-  var TRAVEL_COLOR = "#f59e0b";
+  var TRAVEL_COLOR = "#c2740a";
   var activeTags = new Set();          // 当前选中的标签
   var activeProvince = null;           // 当前选中的省级行政区（null = 全部）
   var map = null;
@@ -112,14 +112,34 @@
   }
   var travelPts = (D.travel || []).map(toPoint);
 
-  // 同时受「标签」与「省级行政区」两个维度筛选
+  // 地图 / 记录列表仅受「省级行政区」筛选（标签筛选独立作用于兴趣 / 鱼种卡片）
   function passFilters(pt) {
     if (activeProvince && pt.province !== activeProvince) return false;
-    if (activeTags.size > 0 && !pt.tags.some(function (t) { return activeTags.has(t); })) return false;
     return true;
   }
   function filtered(points) {
     return points.filter(passFilters);
+  }
+
+  /* ---------------- 地图边界数据懒加载（首次打开足迹版块才注入，减少首屏体积） ---------------- */
+  function loadScript(src) {
+    return new Promise(function (resolve, reject) {
+      var s = document.createElement("script");
+      s.src = src;
+      s.onload = function () { resolve(); };
+      s.onerror = function () { reject(new Error("load fail: " + src)); };
+      document.head.appendChild(s);
+    });
+  }
+  function ensureMapScripts(cb) {
+    if (window.CHINA_PROV_GEO && window.CHINA_CITY_GEO) { cb(); return; }
+    Promise.all([
+      loadScript("js/china-prov-geo.js"),
+      loadScript("js/china-city-geo.js"),
+    ]).then(cb).catch(function () {
+      var c = document.getElementById("chinaMap");
+      if (c) c.innerHTML = '<p style="padding:40px;text-align:center;color:#cdd">地图边界数据加载失败，请检查网络后重试。</p>';
+    });
   }
 
   /* ---------------- 初始化 Leaflet 中国地形图（省界 + 地级市界 + 地形瓦片） ---------------- */
@@ -207,7 +227,7 @@
       var m = L.marker([pt.value[1], pt.value[0]], {
         icon: L.divIcon({
           className: "travel-dot",
-          html: '<span class="dot-core"></span>',
+          html: '<span class="dot-core" role="img" aria-label="' + esc(pt.name) + ' 旅行足迹"></span>',
           iconSize: [18, 18], iconAnchor: [9, 9],
         }),
         title: pt.name,
@@ -263,6 +283,7 @@
       ? '<div class="detail-img"><img src="' + esc(d.img) + '" alt="' + esc(d.name) + '" /></div>'
       : '<div class="detail-img placeholder">📷 配图待添加</div>';
     body.innerHTML =
+      '<button class="detail-close" type="button" aria-label="关闭详情">✕</button>' +
       '<span class="d-type" style="background:' + TRAVEL_COLOR + '">📍 旅行足迹</span>' +
       "<h3>" + esc(d.name) + "</h3>" +
       imgLine +
@@ -270,6 +291,10 @@
       '<p class="d-meta"><b>日期：</b>' + esc(d.date || "-") +
       "　<b>坐标：</b>" + esc(d.value ? d.value[0].toFixed(2) + ", " + d.value[1].toFixed(2) : "-") + "</p>" +
       (d.note ? '<div class="d-note">' + md(d.note) + "</div>" : "");
+    var closeBtn = body.querySelector(".detail-close");
+    if (closeBtn) closeBtn.addEventListener("click", function () {
+      body.hidden = true; empty.hidden = false;
+    });
   }
 
   /* ---------------- 记录列表（去过的地方，按省级行政区分组） ---------------- */
@@ -421,23 +446,58 @@
     }).join("");
   }
 
-  /* ---------------- 标签联动筛选 ---------------- */
+  /* ---------------- 标签联动筛选（作用于兴趣 / 鱼种卡片） ---------------- */
   function applyTagFilter() {
-    // 兴趣卡片 + 鱼种卡片
+    // 兴趣卡片 + 鱼种卡片：命中的高亮，未命中的淡化
     document.querySelectorAll(".hobby, .fish").forEach(function (el) {
       var tags = (el.getAttribute("data-tags") || "").split(",").filter(Boolean);
       var hit = activeTags.size === 0 || tags.some(function (t) { return activeTags.has(t); });
       el.classList.toggle("dim", !hit);
     });
-    // 筛选后隐藏无内容的 目 / 科 分组
+    // 筛选后隐藏无匹配内容的 目 / 科 分组
     document.querySelectorAll(".fish-family").forEach(function (fam) {
       fam.classList.toggle("hidden", fam.querySelectorAll(".fish:not(.dim)").length === 0);
     });
     document.querySelectorAll(".fish-order").forEach(function (sec) {
       sec.classList.toggle("hidden", sec.querySelectorAll(".fish:not(.dim)").length === 0);
     });
-    // 地图 + 记录列表（按当前标签与省份重新渲染）
-    refresh();
+  }
+
+  /* ---------------- 标签筛选条（兴趣 / 鱼种共用 activeTags） ---------------- */
+  function buildTagFilter() {
+    var bars = document.querySelectorAll(".tag-filter");
+    if (!bars.length) return;
+    var tagsDef = (D.tags && D.tags.length) ? D.tags : [];
+    function syncChips() {
+      bars.forEach(function (bar) {
+        bar.querySelectorAll(".tag-chip").forEach(function (c) {
+          var tg = c.getAttribute("data-tag");
+          var on = tg === "__all" ? activeTags.size === 0 : activeTags.has(tg);
+          c.classList.toggle("active", on);
+        });
+      });
+    }
+    bars.forEach(function (bar) {
+      bar.innerHTML =
+        '<button class="tag-chip" data-tag="__all">全部</button>' +
+        tagsDef.map(function (t) {
+          var name = t.name || t, color = t.color || "var(--plan)";
+          return '<button class="tag-chip" data-tag="' + esc(name) + '" style="--tc:' + esc(color) + '">' + esc(name) + "</button>";
+        }).join("");
+    });
+    syncChips();
+    bars.forEach(function (bar) {
+      bar.addEventListener("click", function (e) {
+        var chip = e.target.closest ? e.target.closest(".tag-chip") : null;
+        if (!chip) return;
+        var tg = chip.getAttribute("data-tag");
+        if (tg === "__all") activeTags.clear();
+        else if (activeTags.has(tg)) activeTags.delete(tg);
+        else activeTags.add(tg);
+        syncChips();
+        applyTagFilter();
+      });
+    });
   }
 
   /* ---------------- 统一刷新（地图 + 列表 + 统计） ---------------- */
@@ -523,11 +583,18 @@
     });
     closeDrawer();
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-    // 地图：切到足迹版块时再初始化并修正尺寸
+    // 地图：切到足迹版块时再加载边界数据并初始化（懒加载，省首屏体积）
     if (target === "map") {
-      if (!mapReady) { initMap(); mapReady = true; }
-      setTimeout(function () { if (map) map.invalidateSize(); }, 80);
-      updateMapStat(filtered(travelPts).length);
+      if (!mapReady) {
+        ensureMapScripts(function () {
+          initMap(); mapReady = true;
+          setTimeout(function () { if (map) map.invalidateSize(); }, 80);
+          updateMapStat(filtered(travelPts).length);
+        });
+      } else {
+        setTimeout(function () { if (map) map.invalidateSize(); }, 80);
+        updateMapStat(filtered(travelPts).length);
+      }
     }
     revealPanel(panel);
   }
@@ -550,6 +617,7 @@
   });
 
   /* ---------------- 启动 ---------------- */
+  buildTagFilter();
   buildProvFilter();
   buildRecords();
   updateMapStat(travelPts.length);
