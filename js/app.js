@@ -677,7 +677,9 @@
           card.style.setProperty("--cx", px + "%");
           card.style.setProperty("--cy", py + "%");
           if (card.classList.contains("fx-tilt")) {
-            var rx = ((py - 50) / 50) * -5, ry = ((px - 50) / 50) * 5;
+            // 小鱼卡片又小又密，倾斜幅度减半，避免"晃"
+            var maxDeg = card.classList.contains("fish") ? 2.2 : 5;
+            var rx = ((py - 50) / 50) * -maxDeg, ry = ((px - 50) / 50) * maxDeg;
             card.style.transform = "perspective(900px) rotateX(" + rx.toFixed(2) +
               "deg) rotateY(" + ry.toFixed(2) + "deg) translateY(-6px)";
           }
