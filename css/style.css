@@ -156,15 +156,16 @@ body::before {
   from { background-position: 0% 0%; }
   to   { background-position: 100% 100%; }
 }
-/* 全局深度蒙版：顶部柔光 + 轻底部/边缘暗角，统一空间感（浮在背景之上、内容之下）；
-   此处调轻，避免边缘发黑显得"没占满"，文字可读仍由卡片毛玻璃 + 标题浅色光晕保证 */
+/* 全局深度蒙版：顶部柔光 + 极轻底部/边缘暗角，统一空间感（浮在背景之上、内容之下）；
+   底部大幅调轻，确保照片一直铺满到页面最底，不再"下半部发黑露空"；
+   文字可读由卡片毛玻璃 + 标题浅色光晕保证，无需靠重暗角压暗 */
 body::after {
   content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background:
-    rgba(16, 26, 42, .10),
+    rgba(16, 26, 42, .08),
     radial-gradient(135% 90% at 50% -8%, rgba(255, 255, 255, .16), transparent 42%),
-    radial-gradient(150% 120% at 50% 120%, rgba(12, 20, 36, .30), transparent 56%),
-    radial-gradient(120% 100% at 50% 50%, transparent 56%, rgba(12, 20, 36, .20));
+    radial-gradient(140% 110% at 50% 125%, rgba(12, 20, 36, .16), transparent 60%),
+    radial-gradient(120% 100% at 50% 50%, transparent 62%, rgba(12, 20, 36, .12));
 }
 
 a { color: var(--plan); text-decoration: none; }
@@ -655,16 +656,15 @@ a:hover { color: var(--amber); text-decoration: underline; }
 .journal-card .j-date { color: var(--muted); font-size: 14px; }
 .journal-card .markdown { font-size: 16.5px; line-height: 1.7; }
 
-/* ---------------- Footer（亮色毛玻璃，与全站统一 · 贴底） ---------------- */
+/* ---------------- Footer（扁平毛玻璃 · 贴底 · 无渐变） ---------------- */
 .footer {
   margin-top: auto;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, .42) 42px);
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, .42);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 40px);
-  mask-image: linear-gradient(180deg, transparent 0, #000 40px);
-  color: var(--text-soft); padding: 44px 0 40px; text-align: center;
-  border-top: none;
+  color: var(--text-soft); padding: 26px 0 24px; text-align: center;
+  border-top: 1px solid var(--glass-line);
 }
 .footer p { margin: 5px 0; font-size: 13px; }
 .footer #footerName { font-weight: 600; color: var(--text); font-size: 15px; }
@@ -693,7 +693,7 @@ a:hover { color: var(--amber); text-decoration: underline; }
   .travel-dot .dot-core { animation: none; }
   /* 高级动态视觉层：尊重「减少动态」偏好，全部关闭 */
   .fx-spotlight, .fx-aurora, .fx-cursor { display: none; }
-  .panel.active { animation: none; }
+  .panel.active > .section, .panel.active > .hero { animation: none; }
   .fx-card::before { transition: none; opacity: 0 !important; }
 }
 
@@ -743,8 +743,11 @@ a:hover { color: var(--amber); text-decoration: underline; }
 }
 .fx-card:hover::before { opacity: 1; }
 
-/* 版块切换入场：轻微上浮 + 缩放 + 淡入 */
-.panel.active { animation: panelIn .7s var(--ease) both; }
+/* 版块切换入场：轻微上浮 + 缩放 + 淡入。
+   注意：动画放在内部 .section/.hero 上，而非 .panel 自身——
+   否则 .panel 带 transform 会把其 fixed 背景(::before)临时"捕获"成相对 panel 定位，
+   在内容较短的版块切换瞬间，背景底部会露黑、显得"没占满下部"。 */
+.panel.active > .section, .panel.active > .hero { animation: panelIn .7s var(--ease) both; }
 @keyframes panelIn {
   from { opacity: 0; transform: translateY(16px) scale(.992); }
   to   { opacity: 1; transform: none; }
