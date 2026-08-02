@@ -91,7 +91,7 @@ body {
   display: none; padding-bottom: 8px;
 }
 .panel::before {
-  content: ""; position: fixed; inset: -8%; z-index: -2; pointer-events: none;
+  content: ""; position: fixed; inset: -12%; z-index: -2; pointer-events: none;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -106,58 +106,48 @@ body {
 
 /* 各版块背景：分层高级调色 —— 左上柔光 + 半透明色彩罩（保留照片质感、非 multiply 死板叠蓝）+ 底图；
    同一调性下每版块微调味温（冷蓝/靛蓝/青绿/暖琥珀/深青/蓝紫），营造"各有氛围却整体统一"的高级感 */
-#panel-hero::before    { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.12), transparent 55%), linear-gradient(150deg, rgba(30,98,182,.50), rgba(16,52,112,.40) 55%, rgba(24,74,142,.52)), url("../assets/bg-hero.jpg");    animation: kenBurnsA 18s ease-in-out infinite alternate; }
-#panel-about::before   { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.12), transparent 55%), linear-gradient(150deg, rgba(48,66,134,.50), rgba(22,42,98,.40) 55%, rgba(34,48,118,.52)), url("../assets/bg-about.jpg");   animation: kenBurnsB 20s ease-in-out infinite alternate; }
-#panel-hobbies::before { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.12), transparent 55%), linear-gradient(150deg, rgba(22,118,130,.48), rgba(14,76,98,.40) 55%, rgba(20,90,116,.50)), url("../assets/bg-hobby.jpg");   animation: kenBurnsC 22s ease-in-out infinite alternate; }
-#panel-map::before     { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.12), transparent 55%), linear-gradient(150deg, rgba(176,124,44,.48), rgba(124,84,30,.40) 55%, rgba(150,104,38,.52)), url("../assets/bg-travel.jpg");  animation: kenBurnsD 19s ease-in-out infinite alternate; }
-#panel-fish::before    { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.12), transparent 55%), linear-gradient(150deg, rgba(18,102,142,.52), rgba(10,60,94,.42) 55%, rgba(16,86,128,.54)), url("../assets/bg-fish.jpg");    animation: kenBurnsE 21s ease-in-out infinite alternate; }
-#panel-journal::before { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.12), transparent 55%), linear-gradient(150deg, rgba(64,58,146,.50), rgba(34,32,100,.42) 55%, rgba(48,44,130,.54)), url("../assets/bg-journal.jpg"); animation: kenBurnsF 23s ease-in-out infinite alternate; }
+#panel-hero::before    { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.12), transparent 55%), linear-gradient(150deg, rgba(30,98,182,.50), rgba(16,52,112,.40) 55%, rgba(24,74,142,.52)), url("../assets/bg-hero.jpg");    animation: kenBurnsA 30s ease-in-out infinite alternate; }
+#panel-about::before   { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.12), transparent 55%), linear-gradient(150deg, rgba(48,66,134,.50), rgba(22,42,98,.40) 55%, rgba(34,48,118,.52)), url("../assets/bg-about.jpg");   animation: kenBurnsB 32s ease-in-out infinite alternate; }
+#panel-hobbies::before { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.12), transparent 55%), linear-gradient(150deg, rgba(22,118,130,.48), rgba(14,76,98,.40) 55%, rgba(20,90,116,.50)), url("../assets/bg-hobby.jpg");   animation: kenBurnsC 34s ease-in-out infinite alternate; }
+#panel-map::before     { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.12), transparent 55%), linear-gradient(150deg, rgba(176,124,44,.48), rgba(124,84,30,.40) 55%, rgba(150,104,38,.52)), url("../assets/bg-travel.jpg");  animation: kenBurnsD 30s ease-in-out infinite alternate; }
+#panel-fish::before    { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.12), transparent 55%), linear-gradient(150deg, rgba(18,102,142,.52), rgba(10,60,94,.42) 55%, rgba(16,86,128,.54)), url("../assets/bg-fish.jpg");    animation: kenBurnsE 32s ease-in-out infinite alternate; }
+#panel-journal::before { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.12), transparent 55%), linear-gradient(150deg, rgba(64,58,146,.50), rgba(34,32,100,.42) 55%, rgba(48,44,130,.54)), url("../assets/bg-journal.jpg"); animation: kenBurnsF 34s ease-in-out infinite alternate; }
 
-/* 四套 Ken Burns 轨迹（不同方向/幅度/节奏，避免机械重复） */
+/* 高级感缓慢推拉：仅极缓的缩放 + 极小的单向位移，无旋转、无多向摆动（消除"诡异"轨迹）；
+   配合 .panel::before 的 -12% 超采样，运动全程始终满铺。节奏放慢到 30s 级，读起来像电影静帧呼吸。 */
 @keyframes kenBurnsA {
-  0%   { transform: scale(1.06) translate(0, 0) rotate(0deg); }
-  40%  { transform: scale(1.14) translate(-1.2%, -0.6%) rotate(0.15deg); }
-  70%  { transform: scale(1.18) translate(0.6%, 0.3%) rotate(-0.1deg); }
-  100% { transform: scale(1.12) translate(-0.4%, 0.5%) rotate(0.05deg); }
+  0%   { transform: scale(1.04) translate(0, 0); }
+  100% { transform: scale(1.10) translate(-1.2%, -0.8%); }
 }
 @keyframes kenBurnsB {
-  0%   { transform: scale(1.08) translate(0.5%, 0) rotate(0deg); }
-  40%  { transform: scale(1.15) translate(-0.8%, -1%) rotate(-0.12deg); }
-  70%  { transform: scale(1.19) translate(0.3%, 0.7%) rotate(0.08deg); }
-  100% { transform: scale(1.13) translate(-0.6%, -0.3%) rotate(-0.04deg); }
+  0%   { transform: scale(1.05) translate(0, 0); }
+  100% { transform: scale(1.11) translate(1%, -0.6%); }
 }
 @keyframes kenBurnsC {
-  0%   { transform: scale(1.05) translate(0, 0.5%) rotate(0deg); }
-  40%  { transform: scale(1.13) translate(-1%, -0.4%) rotate(0.1deg); }
-  70%  { transform: scale(1.17) translate(0.8%, 0.2%) rotate(-0.08deg); }
-  100% { transform: scale(1.11) translate(-0.3%, -0.6%) rotate(0.06deg); }
+  0%   { transform: scale(1.04) translate(0, 0); }
+  100% { transform: scale(1.10) translate(0.8%, 1%); }
 }
 @keyframes kenBurnsD {
-  0%   { transform: scale(1.07) translate(-0.5%, 0) rotate(0deg); }
-  40%  { transform: scale(1.16) translate(0.6%, -0.8%) rotate(-0.14deg); }
-  70%  { transform: scale(1.20) translate(-0.4%, 0.5%) rotate(0.09deg); }
-  100% { transform: scale(1.12) translate(0.5%, -0.2%) rotate(-0.05deg); }
+  0%   { transform: scale(1.05) translate(0, 0); }
+  100% { transform: scale(1.11) translate(-1%, 0.8%); }
 }
 @keyframes kenBurnsE {
-  0%   { transform: scale(1.06) translate(0, -0.5%) rotate(0deg); }
-  40%  { transform: scale(1.14) translate(-0.9%, 0.6%) rotate(0.11deg); }
-  70%  { transform: scale(1.18) translate(0.5%, -0.3%) rotate(-0.07deg); }
-  100% { transform: scale(1.11) translate(-0.5%, 0.4%) rotate(0.04deg); }
+  0%   { transform: scale(1.04) translate(0, 0); }
+  100% { transform: scale(1.10) translate(1.2%, -0.8%); }
 }
 @keyframes kenBurnsF {
-  0%   { transform: scale(1.09) translate(0.4%, 0.4%) rotate(0deg); }
-  40%  { transform: scale(1.15) translate(-0.6%, -0.6%) rotate(-0.1deg); }
-  70%  { transform: scale(1.19) translate(0.7%, 0.3%) rotate(0.12deg); }
-  100% { transform: scale(1.13) translate(-0.3%, -0.5%) rotate(-0.03deg); }
+  0%   { transform: scale(1.05) translate(0, 0); }
+  100% { transform: scale(1.11) translate(-0.8%, 1%); }
 }
 
 /* 全局漂移光晕：缓慢游移的柔光，给背景注入"呼吸感"与电影质感（screen 混合只提亮，不压字） */
 body::before {
   content: ""; position: fixed; inset: -25%; z-index: -1; pointer-events: none;
   background:
+    linear-gradient(115deg, transparent 32%, rgba(255, 255, 255, .09) 50%, transparent 68%),
     radial-gradient(38% 38% at 30% 26%, rgba(255, 255, 255, .12), transparent 60%),
     radial-gradient(44% 44% at 76% 72%, rgba(120, 170, 255, .10), transparent 60%);
-  background-size: 200% 200%;
+  background-size: 220% 220%, 200% 200%, 200% 200%;
   mix-blend-mode: screen;
   animation: lightDrift 28s ease-in-out infinite alternate;
 }
