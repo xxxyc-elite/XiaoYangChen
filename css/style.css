@@ -94,7 +94,7 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  filter: blur(7px) saturate(.62) brightness(1.02);
+  filter: blur(6px) saturate(1.05) brightness(1.02);
   opacity: 0;
   transition: opacity .8s var(--ease);
 }
@@ -102,13 +102,14 @@ body {
 /* 未激活版块的背景动画暂停，省 GPU、切版块更顺 */
 .panel:not(.active)::before { animation-play-state: paused; }
 
-/* 各版块背景图分配（蓝图双色调：蓝渐变 multiply 叠加 + 去饱和，统一成规划师底图气质，保留一丝暖调） */
-#panel-hero::before    { background-image: linear-gradient(155deg, rgba(13,60,120,.34), rgba(14,99,191,.14) 55%, rgba(20,72,140,.24)), url("../assets/bg-hero.jpg");    background-blend-mode: multiply; animation: kenBurnsA 18s ease-in-out infinite alternate; }
-#panel-about::before   { background-image: linear-gradient(155deg, rgba(13,60,120,.34), rgba(14,99,191,.14) 55%, rgba(20,72,140,.24)), url("../assets/bg-about.jpg");   background-blend-mode: multiply; animation: kenBurnsB 20s ease-in-out infinite alternate; }
-#panel-hobbies::before { background-image: linear-gradient(155deg, rgba(13,60,120,.34), rgba(14,99,191,.14) 55%, rgba(20,72,140,.24)), url("../assets/bg-hobby.jpg");   background-blend-mode: multiply; animation: kenBurnsC 22s ease-in-out infinite alternate; }
-#panel-map::before     { background-image: linear-gradient(155deg, rgba(13,60,120,.34), rgba(14,99,191,.14) 55%, rgba(20,72,140,.24)), url("../assets/bg-travel.jpg");  background-blend-mode: multiply; animation: kenBurnsD 19s ease-in-out infinite alternate; }
-#panel-fish::before    { background-image: linear-gradient(155deg, rgba(13,60,120,.34), rgba(14,99,191,.14) 55%, rgba(20,72,140,.24)), url("../assets/bg-fish.jpg");    background-blend-mode: multiply; animation: kenBurnsE 21s ease-in-out infinite alternate; }
-#panel-journal::before{ background-image: linear-gradient(155deg, rgba(13,60,120,.34), rgba(14,99,191,.14) 55%, rgba(20,72,140,.24)), url("../assets/bg-journal.jpg"); background-blend-mode: multiply; animation: kenBurnsF 23s ease-in-out infinite alternate; }
+/* 各版块背景：分层高级调色 —— 左上柔光 + 半透明色彩罩（保留照片质感、非 multiply 死板叠蓝）+ 底图；
+   同一调性下每版块微调味温（冷蓝/靛蓝/青绿/暖琥珀/深青/蓝紫），营造"各有氛围却整体统一"的高级感 */
+#panel-hero::before    { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.12), transparent 55%), linear-gradient(150deg, rgba(30,98,182,.42), rgba(16,52,112,.30) 55%, rgba(24,74,142,.40)), url("../assets/bg-hero.jpg");    animation: kenBurnsA 18s ease-in-out infinite alternate; }
+#panel-about::before   { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.12), transparent 55%), linear-gradient(150deg, rgba(48,66,134,.40), rgba(22,42,98,.32) 55%, rgba(34,48,118,.40)), url("../assets/bg-about.jpg");   animation: kenBurnsB 20s ease-in-out infinite alternate; }
+#panel-hobbies::before { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.12), transparent 55%), linear-gradient(150deg, rgba(22,118,130,.40), rgba(14,76,98,.32) 55%, rgba(20,90,116,.40)), url("../assets/bg-hobby.jpg");   animation: kenBurnsC 22s ease-in-out infinite alternate; }
+#panel-map::before     { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.12), transparent 55%), linear-gradient(150deg, rgba(176,124,44,.36), rgba(124,84,30,.32) 55%, rgba(150,104,38,.40)), url("../assets/bg-travel.jpg");  animation: kenBurnsD 19s ease-in-out infinite alternate; }
+#panel-fish::before    { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.12), transparent 55%), linear-gradient(150deg, rgba(18,102,142,.44), rgba(10,60,94,.34) 55%, rgba(16,86,128,.42)), url("../assets/bg-fish.jpg");    animation: kenBurnsE 21s ease-in-out infinite alternate; }
+#panel-journal::before { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.12), transparent 55%), linear-gradient(150deg, rgba(64,58,146,.40), rgba(34,32,100,.34) 55%, rgba(48,44,130,.42)), url("../assets/bg-journal.jpg"); animation: kenBurnsF 23s ease-in-out infinite alternate; }
 
 /* 四套 Ken Burns 轨迹（不同方向/幅度/节奏，避免机械重复） */
 @keyframes kenBurnsA {
@@ -148,10 +149,13 @@ body {
   100% { transform: scale(1.13) translate(-0.3%, -0.5%) rotate(-0.03deg); }
 }
 
-/* 全局薄纱遮罩（浮在所有背景之上、内容之下） */
+/* 全局深度蒙版：顶部柔光 + 底部/边缘暗角，统一各版块空间感（浮在背景之上、内容之下） */
 body::after {
   content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
-  background: radial-gradient(125% 105% at 50% 34%, transparent 40%, rgba(18, 26, 36, .32) 100%);
+  background:
+    radial-gradient(135% 90% at 50% -8%, rgba(255, 255, 255, .14), transparent 42%),
+    radial-gradient(150% 120% at 50% 120%, rgba(12, 20, 36, .40), transparent 56%),
+    radial-gradient(120% 100% at 50% 50%, transparent 50%, rgba(12, 20, 36, .30));
 }
 
 a { color: var(--plan); text-decoration: none; }
