@@ -91,12 +91,12 @@ body {
   display: none; padding-bottom: 8px;
 }
 .panel::before {
-  content: ""; position: fixed; inset: -12%; z-index: -2; pointer-events: none;
+  content: ""; position: fixed; inset: -14%; z-index: -2; pointer-events: none;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  /* 清晰背景：去掉高斯模糊，仅做轻微压暗与统一调性，保留照片质感 */
-  filter: saturate(1.04) brightness(.92) contrast(1.03);
+  /* 清晰背景：仅极轻统一调性，保留照片通透质感，不靠模糊/重罩压暗 */
+  filter: saturate(1.06) brightness(1.0) contrast(1.05);
   opacity: 0;
   transition: opacity .8s var(--ease);
 }
@@ -104,65 +104,67 @@ body {
 /* 未激活版块的背景动画暂停，省 GPU、切版块更顺 */
 .panel:not(.active)::before { animation-play-state: paused; }
 
-/* 各版块背景：分层高级调色 —— 左上柔光 + 半透明色彩罩（保留照片质感、非 multiply 死板叠蓝）+ 底图；
-   同一调性下每版块微调味温（冷蓝/靛蓝/青绿/暖琥珀/深青/蓝紫），营造"各有氛围却整体统一"的高级感 */
-#panel-hero::before    { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.12), transparent 55%), linear-gradient(150deg, rgba(30,98,182,.50), rgba(16,52,112,.40) 55%, rgba(24,74,142,.52)), url("../assets/bg-hero.jpg");    animation: kenBurnsA 30s ease-in-out infinite alternate; }
-#panel-about::before   { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.12), transparent 55%), linear-gradient(150deg, rgba(48,66,134,.50), rgba(22,42,98,.40) 55%, rgba(34,48,118,.52)), url("../assets/bg-about.jpg");   animation: kenBurnsB 32s ease-in-out infinite alternate; }
-#panel-hobbies::before { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.12), transparent 55%), linear-gradient(150deg, rgba(22,118,130,.48), rgba(14,76,98,.40) 55%, rgba(20,90,116,.50)), url("../assets/bg-hobby.jpg");   animation: kenBurnsC 34s ease-in-out infinite alternate; }
-#panel-map::before     { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.12), transparent 55%), linear-gradient(150deg, rgba(176,124,44,.48), rgba(124,84,30,.40) 55%, rgba(150,104,38,.52)), url("../assets/bg-travel.jpg");  animation: kenBurnsD 30s ease-in-out infinite alternate; }
-#panel-fish::before    { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.12), transparent 55%), linear-gradient(150deg, rgba(18,102,142,.52), rgba(10,60,94,.42) 55%, rgba(16,86,128,.54)), url("../assets/bg-fish.jpg");    animation: kenBurnsE 32s ease-in-out infinite alternate; }
-#panel-journal::before { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.12), transparent 55%), linear-gradient(150deg, rgba(64,58,146,.50), rgba(34,32,100,.42) 55%, rgba(48,44,130,.54)), url("../assets/bg-journal.jpg"); animation: kenBurnsF 34s ease-in-out infinite alternate; }
+/* 各版块背景：分层高级调色 —— 左上柔光 + 极轻半透明色彩罩（只定味温、不糊照片）+ 底图；
+   同一调性下每版块微调味温（冷蓝/靛蓝/青绿/暖琥珀/深青/蓝紫），照片通透清晰、各有氛围却整体统一 */
+#panel-hero::before    { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.16), transparent 55%), linear-gradient(150deg, rgba(30,98,182,.30), rgba(16,52,112,.22) 55%, rgba(24,74,142,.32)), url("../assets/bg-hero.jpg");    animation: kenBurnsA 28s ease-in-out infinite alternate; }
+#panel-about::before   { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.16), transparent 55%), linear-gradient(150deg, rgba(48,66,134,.30), rgba(22,42,98,.22) 55%, rgba(34,48,118,.32)), url("../assets/bg-about.jpg");   animation: kenBurnsB 30s ease-in-out infinite alternate; }
+#panel-hobbies::before { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.16), transparent 55%), linear-gradient(150deg, rgba(22,118,130,.28), rgba(14,76,98,.20) 55%, rgba(20,90,116,.30)), url("../assets/bg-hobby.jpg");   animation: kenBurnsC 32s ease-in-out infinite alternate; }
+#panel-map::before     { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.16), transparent 55%), linear-gradient(150deg, rgba(176,124,44,.28), rgba(124,84,30,.20) 55%, rgba(150,104,38,.30)), url("../assets/bg-travel.jpg");  animation: kenBurnsD 28s ease-in-out infinite alternate; }
+#panel-fish::before    { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.16), transparent 55%), linear-gradient(150deg, rgba(18,102,142,.32), rgba(10,60,94,.24) 55%, rgba(16,86,128,.34)), url("../assets/bg-fish.jpg");    animation: kenBurnsE 30s ease-in-out infinite alternate; }
+#panel-journal::before { background-image: radial-gradient(120% 80% at 28% 10%, rgba(255,255,255,.16), transparent 55%), linear-gradient(150deg, rgba(64,58,146,.30), rgba(34,32,100,.22) 55%, rgba(48,44,130,.32)), url("../assets/bg-journal.jpg"); animation: kenBurnsF 32s ease-in-out infinite alternate; }
 
-/* 高级感缓慢推拉：仅极缓的缩放 + 极小的单向位移，无旋转、无多向摆动（消除"诡异"轨迹）；
-   配合 .panel::before 的 -12% 超采样，运动全程始终满铺。节奏放慢到 30s 级，读起来像电影静帧呼吸。 */
+/* 高级电影推拉：明显但克制的缓慢放大 + 单向轻微摇移，无旋转、无多向摆动（消除"诡异"轨迹）；
+   配合 .panel::before 的 -14% 超采样，运动全程始终满铺。读起来像电影镜头的呼吸与推进。 */
 @keyframes kenBurnsA {
-  0%   { transform: scale(1.04) translate(0, 0); }
-  100% { transform: scale(1.10) translate(-1.2%, -0.8%); }
+  0%   { transform: scale(1.06) translate(0, 0); }
+  100% { transform: scale(1.15) translate(-1.6%, -1.1%); }
 }
 @keyframes kenBurnsB {
-  0%   { transform: scale(1.05) translate(0, 0); }
-  100% { transform: scale(1.11) translate(1%, -0.6%); }
+  0%   { transform: scale(1.07) translate(0, 0); }
+  100% { transform: scale(1.16) translate(1.4%, -0.9%); }
 }
 @keyframes kenBurnsC {
-  0%   { transform: scale(1.04) translate(0, 0); }
-  100% { transform: scale(1.10) translate(0.8%, 1%); }
+  0%   { transform: scale(1.06) translate(0, 0); }
+  100% { transform: scale(1.15) translate(1.1%, 1.4%); }
 }
 @keyframes kenBurnsD {
-  0%   { transform: scale(1.05) translate(0, 0); }
-  100% { transform: scale(1.11) translate(-1%, 0.8%); }
+  0%   { transform: scale(1.07) translate(0, 0); }
+  100% { transform: scale(1.16) translate(-1.4%, 1.1%); }
 }
 @keyframes kenBurnsE {
-  0%   { transform: scale(1.04) translate(0, 0); }
-  100% { transform: scale(1.10) translate(1.2%, -0.8%); }
+  0%   { transform: scale(1.06) translate(0, 0); }
+  100% { transform: scale(1.15) translate(1.6%, -1.1%); }
 }
 @keyframes kenBurnsF {
-  0%   { transform: scale(1.05) translate(0, 0); }
-  100% { transform: scale(1.11) translate(-0.8%, 1%); }
+  0%   { transform: scale(1.07) translate(0, 0); }
+  100% { transform: scale(1.16) translate(-1.1%, 1.4%); }
 }
 
-/* 全局漂移光晕：缓慢游移的柔光，给背景注入"呼吸感"与电影质感（screen 混合只提亮，不压字） */
+/* 全局高级动感：一条缓慢斜向扫过的柔光带（screen 混合只提亮、不压字）+ 游移的柔光团，
+   让"画面有光在流动"的电影质感，而非整张照片平移；宏观呼吸感来自光带的往复扫过 */
 body::before {
   content: ""; position: fixed; inset: -25%; z-index: -1; pointer-events: none;
   background:
-    linear-gradient(115deg, transparent 32%, rgba(255, 255, 255, .09) 50%, transparent 68%),
-    radial-gradient(38% 38% at 30% 26%, rgba(255, 255, 255, .12), transparent 60%),
-    radial-gradient(44% 44% at 76% 72%, rgba(120, 170, 255, .10), transparent 60%);
-  background-size: 220% 220%, 200% 200%, 200% 200%;
+    linear-gradient(115deg, transparent 38%, rgba(255, 255, 255, .16) 50%, transparent 62%),
+    radial-gradient(40% 40% at 30% 26%, rgba(255, 255, 255, .14), transparent 60%),
+    radial-gradient(46% 46% at 76% 72%, rgba(120, 170, 255, .12), transparent 60%);
+  background-size: 260% 260%, 200% 200%, 200% 200%;
   mix-blend-mode: screen;
-  animation: lightDrift 28s ease-in-out infinite alternate;
+  animation: lightDrift 22s ease-in-out infinite alternate;
 }
 @keyframes lightDrift {
   from { background-position: 0% 0%; }
   to   { background-position: 100% 100%; }
 }
-/* 全局深度蒙版：顶部柔光 + 底部/边缘暗角，统一各版块空间感（浮在背景之上、内容之下） */
+/* 全局深度蒙版：顶部柔光 + 轻底部/边缘暗角，统一空间感（浮在背景之上、内容之下）；
+   此处调轻，避免边缘发黑显得"没占满"，文字可读仍由卡片毛玻璃 + 标题浅色光晕保证 */
 body::after {
   content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background:
-    rgba(16, 26, 42, .16),
-    radial-gradient(135% 90% at 50% -8%, rgba(255, 255, 255, .12), transparent 42%),
-    radial-gradient(150% 120% at 50% 120%, rgba(12, 20, 36, .42), transparent 56%),
-    radial-gradient(120% 100% at 50% 50%, transparent 48%, rgba(12, 20, 36, .30));
+    rgba(16, 26, 42, .10),
+    radial-gradient(135% 90% at 50% -8%, rgba(255, 255, 255, .16), transparent 42%),
+    radial-gradient(150% 120% at 50% 120%, rgba(12, 20, 36, .30), transparent 56%),
+    radial-gradient(120% 100% at 50% 50%, transparent 56%, rgba(12, 20, 36, .20));
 }
 
 a { color: var(--plan); text-decoration: none; }
