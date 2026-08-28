@@ -33,8 +33,11 @@
 
   /* ---------------- 图片：WebP 优先，原图兜底 ----------------
    * index.html 的探测脚本会为支持 WebP 的浏览器给 <html> 加上 .webp 类。
-   * 内容图统一走 assets/_opt/ 下的 WebP（列表用 -t 缩略图，放大看用全尺寸），
+   * 内容图统一走 assets/opt/ 下的 WebP（列表用 -t 缩略图，放大看用全尺寸），
    * 原 JPG/PNG 一律保留在 <img src> 上作为兜底，永不会出现裂图。
+   *
+   * ⚠️ 目录名绝不能以 "_" 开头：GitHub Pages 默认跑 Jekyll，Jekyll 会
+   *    静默忽略所有下划线开头的目录/文件，导致图片全部 404（2026-08-28 踩过）。
    */
   var WEBP = document.documentElement.classList.contains("webp");
 
@@ -44,7 +47,7 @@
     if (!m) return src;
     var base = m[2];
     if (base === "avatar" || base.indexOf("bg-") === 0) return (m[1] || "") + base + ".webp";
-    return "assets/_opt/" + base + (thumb ? "-t" : "") + ".webp";
+    return "assets/opt/" + base + (thumb ? "-t" : "") + ".webp";
   }
 
   // 生成 <picture>（支持 WebP 时加 source，否则退回普通 <img>）
