@@ -1,0 +1,20 @@
+{
+  "name": "肖阳晨的个人网站",
+  "short_name": "肖阳晨",
+  "description": "城市规划研究生 · 旅行足迹地图 · 钓鱼图鉴 · 随笔",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f5f8fc",
+  "theme_color": "#0e63bf",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "categories": ["personal", "lifestyle"],
+  "icons": [
+    { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "favicon.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "favicon-64.png", "sizes": "64x64", "type": "image/png", "purpose": "any" },
+    { "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" }
+  ]
+}

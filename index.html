@@ -2,11 +2,43 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>肖阳晨的个人网站</title>
   <meta name="description" content="肖阳晨的个人网站 — 个人简介、兴趣爱好，可交互中国旅行足迹地图，以及钓鱼种类记录图鉴。" />
-  <link rel="stylesheet" href="css/leaflet.css" />
+  <meta name="author" content="肖阳晨" />
+  <meta name="theme-color" content="#0e63bf" />
+  <meta name="color-scheme" content="light" />
+
+  <!-- Open Graph / 分享卡片 -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="肖阳晨的个人网站" />
+  <meta property="og:title" content="肖阳晨 · 规划 · 垂钓 · 旅行" />
+  <meta property="og:description" content="城市规划研究生。33 处旅行足迹落在一张中国地形图上，21 种鱼获收进图鉴。" />
+  <meta property="og:image" content="https://xxxyc-elite.github.io/XiaoYangChen/assets/bg-hero.jpg" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- 图标 / PWA -->
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="favicon-64.png" sizes="64x64" type="image/png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- 首屏关键资源：WebP 版封面背景（不支持 WebP 的浏览器会自动忽略整条 preload） -->
+  <link rel="preload" as="image" href="assets/bg-hero.webp" type="image/webp" fetchpriority="high" />
+
   <link rel="stylesheet" href="css/style.css" />
+
+  <!-- WebP 能力探测：尽早给 <html> 打标记，供 CSS 背景图与 JS 图片路径决策使用 -->
+  <script>
+    try {
+      var c = document.createElement("canvas");
+      if (c.getContext && c.getContext("2d") &&
+          c.toDataURL("image/webp").indexOf("data:image/webp") === 0) {
+        document.documentElement.classList.add("webp");
+      }
+    } catch (e) {}
+  </script>
 </head>
 <body>
   <!-- 高级动态视觉层（指针光晕 / 极光 / 光标环 / 滚动进度条），全部叠加于内容之下，不改动内容与背景 -->
@@ -22,6 +54,11 @@
         <a class="brand" href="#top" data-target="hero">肖阳晨</a>
         <p class="side-sub">城市规划</p>
       </div>
+      <button class="side-search" id="searchBtn" type="button">
+        <span class="ss-ico" aria-hidden="true">⌕</span>
+        <span class="ss-txt">搜索全站</span>
+        <kbd>Ctrl K</kbd>
+      </button>
       <nav class="side-nav" id="sideNav">
         <a class="side-link" data-target="hero"><span class="sx">00</span><span class="st">封面</span></a>
         <a class="side-link" data-target="about"><span class="sx">01</span><span class="st">个人简介</span></a>
@@ -91,13 +128,16 @@
         </section>
       </section>
 
-      <!-- 03 旅行 & 垂钓 地图 -->
+      <!-- 03 旅行足迹 -->
       <section class="panel" id="panel-map">
         <section class="section" id="map">
           <div class="container">
             <p class="kicker">03 / 旅行足迹</p>
             <h2 class="section-title">旅行足迹</h2>
             <p class="hint">下图为<b>中国地形图</b>（Esri 地形瓦片），叠加了<b>省界</b>（加粗，去过的省份高亮蓝）与<b>地级市界</b>（细线）。<b class="c-travel">琥珀色测绘标记</b> 为到过的地点，点击标记即可在右侧查看旅行记录（并联动下方列表），或用下方省级行政区筛选。上方可切换「地形晕渲 / 自然地理」两种地形底图。</p>
+
+            <!-- 足迹数据可视化（年份分布 + 省级覆盖） -->
+            <div class="travel-viz" id="travelViz"></div>
 
             <div class="map-controls">
               <span class="map-stat" id="mapStat"></span>
@@ -123,13 +163,13 @@
         </section>
       </section>
 
-      <!-- 05 钓鱼图鉴 -->
+      <!-- 04 钓鱼图鉴 -->
       <section class="panel" id="panel-fish">
         <section class="section" id="fish">
           <div class="container">
             <p class="kicker">04 / 钓鱼图鉴</p>
             <h2 class="section-title">钓鱼图鉴</h2>
-            <p class="hint">钓到过的鱼种图鉴。鱼种、描述都能在 <code>js/data.js</code> 的 <code>fishSpecies</code> 里增删。</p>
+            <p class="hint">钓到过的鱼种图鉴。<b>点击图片可放大查看</b>。鱼种、描述都能在 <code>js/data.js</code> 的 <code>fishSpecies</code> 里增删。</p>
             <div class="tag-filter" id="tagFilterFish"></div>
             <div class="fish-overview" id="fishOverview"></div>
             <div class="fish-orders" id="fishGrid"></div>
@@ -137,7 +177,7 @@
         </section>
       </section>
 
-      <!-- 06 随笔 -->
+      <!-- 05 随笔 -->
       <section class="panel" id="panel-journal">
         <section class="section" id="journal">
           <div class="container">
@@ -158,10 +198,54 @@
     </main>
   </div>
 
-  <!-- 依赖（Leaflet 本地化；边界数据本地，首次打开「足迹」版块时懒加载；地形瓦片需联网） -->
-  <script src="js/leaflet.js"></script>
+  <!-- ⌘K 全局搜索命令面板 -->
+  <div class="cmdk" id="cmdk" hidden>
+    <div class="cmdk-backdrop" data-cmdk-close></div>
+    <div class="cmdk-panel" role="dialog" aria-modal="true" aria-label="全局搜索">
+      <div class="cmdk-head">
+        <span class="cmdk-ico" aria-hidden="true">⌕</span>
+        <input id="cmdkInput" type="text" placeholder="搜索地点、鱼种、随笔、版块…"
+               autocomplete="off" spellcheck="false" aria-label="搜索关键词" />
+        <button class="cmdk-esc" type="button" data-cmdk-close aria-label="关闭">ESC</button>
+      </div>
+      <div class="cmdk-list" id="cmdkList" role="listbox"></div>
+      <div class="cmdk-foot">
+        <span><kbd>↑</kbd><kbd>↓</kbd> 选择</span>
+        <span><kbd>Enter</kbd> 打开</span>
+        <span><kbd>Esc</kbd> 关闭</span>
+        <span class="cmdk-count" id="cmdkCount"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 图片放大查看（Lightbox） -->
+  <div class="lightbox" id="lightbox" hidden>
+    <div class="lb-backdrop" data-lb-close></div>
+    <button class="lb-btn lb-close" type="button" data-lb-close aria-label="关闭">✕</button>
+    <button class="lb-btn lb-prev" type="button" id="lbPrev" aria-label="上一张">‹</button>
+    <button class="lb-btn lb-next" type="button" id="lbNext" aria-label="下一张">›</button>
+    <figure class="lb-figure">
+      <img id="lbImg" src="" alt="" />
+      <figcaption><span id="lbTitle"></span><span id="lbSub"></span></figcaption>
+    </figure>
+  </div>
+
+  <!-- 回到顶部 -->
+  <button class="to-top" id="toTop" type="button" aria-label="回到顶部">
+    <span aria-hidden="true">↑</span>
+  </button>
+
+  <!-- 依赖：marked（首屏即用）；Leaflet 与边界数据改为切到「旅行足迹」版块时懒加载 -->
   <script src="js/marked.min.js"></script>
   <script src="js/data.js"></script>
   <script src="js/app.js"></script>
+  <script>
+    // Service Worker：生产环境（https / localhost）才注册，避免本地 file:// 报错
+    if ("serviceWorker" in navigator && location.protocol.indexOf("http") === 0) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("sw.js").catch(function () {});
+      });
+    }
+  </script>
 </body>
 </html>
