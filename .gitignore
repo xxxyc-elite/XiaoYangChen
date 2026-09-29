@@ -7,3 +7,6 @@ Thumbs.db
 *.tmp
 *.bak
 *.tsv
+
+# AI 生成图的原始 PNG（不入库，assets 内已有压缩 JPG）
+generated-images/
